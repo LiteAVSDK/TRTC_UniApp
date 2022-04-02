@@ -1,0 +1,19 @@
+<template>
+	<TRTCCloudUniPlugin-TXLocalViewComponent :viewId="viewId"></TRTCCloudUniPlugin-TXLocalViewComponent>
+</template>
+
+<script>
+	export default {
+		name: 'TrtcLocalView',
+		props: {
+			viewId: {
+				type: String,
+				default: ''
+			}
+		},
+	}
+</script>
+
+<style>
+
+</style>

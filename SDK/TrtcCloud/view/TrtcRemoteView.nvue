@@ -1,0 +1,23 @@
+<template>
+	<TRTCCloudUniPlugin-TXRemoteViewComponent :userId="userId" :viewId="viewId"></TRTCCloudUniPlugin-TXRemoteViewComponent>
+</template>
+
+<script>
+	export default {
+		name: 'TrtcRemoteView',
+		props: {
+			userId: {
+				type: String,
+				default: ''
+			},
+			viewId: {
+				type: String,
+				default: ''
+			}
+		},
+	}
+</script>
+
+<style>
+
+</style>

@@ -1,0 +1,19 @@
+{
+  "name": "TrtcCloud",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "directories": {
+    "doc": "docs",
+    "lib": "lib",
+    "test": "test"
+  },
+  "scripts": {
+  },
+  "devDependencies": {},
+  "dependencies": {
+    "typescript": "^4.6.2"
+  },
+  "author": "",
+  "license": "ISC"
+}
