@@ -216,6 +216,13 @@ var TrtcCloudImpl = /** @class */ (function () {
         catch (error) {
         }
     };
+    TrtcCloudImpl.prototype.setAudioRoute = function (route) {
+        try {
+            TrtcNativeTrtcCloudModule.setAudioRoute(route);
+        }
+        catch (error) {
+        }
+    };
     return TrtcCloudImpl;
 }());
 exports.default = TrtcCloudImpl;

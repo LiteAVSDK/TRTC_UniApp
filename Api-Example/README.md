@@ -32,13 +32,14 @@
 1. 根据您的实际业务需求，下载源码
 
 ```javascript
+# 命令行执行
+git clone https://github.com/LiteAVSDK/TRTC_UniApp.git
 
-# 进入 API-Example
-cd Api-Example
+# 进入 Api-Example 目录
+cd TRTC_UniApp/Api-Example/
 
 # 安装依赖
-npm i
-
+npm install
 ```
 
 2. 将工程文件，导入自己的 HBuilderX 工程。

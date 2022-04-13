@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.TRTCAudioQuality = exports.TRTCVideoStreamType = exports.TRTCRoleType = exports.TRTCAppScene = exports.TRTCParams = void 0;
+exports.TRTCCloudDef = exports.TRTCAudioQuality = exports.TRTCVideoStreamType = exports.TRTCRoleType = exports.TRTCAppScene = exports.TRTCParams = void 0;
 var TRTCParams = /** @class */ (function () {
     function TRTCParams(sdkAppId, userId, roomId, userSig, strRoomId, privateMapKey, role, businessInfo, streamId, userDefineRecordId) {
         this.sdkAppId = sdkAppId;
@@ -41,3 +41,11 @@ var TRTCAudioQuality;
     TRTCAudioQuality[TRTCAudioQuality["TRTCAudioQualityDefault"] = 2] = "TRTCAudioQualityDefault";
     TRTCAudioQuality[TRTCAudioQuality["TRTCAudioQualityMusic"] = 3] = "TRTCAudioQualityMusic";
 })(TRTCAudioQuality = exports.TRTCAudioQuality || (exports.TRTCAudioQuality = {}));
+var TRTCCloudDef = /** @class */ (function () {
+    function TRTCCloudDef() {
+    }
+    TRTCCloudDef.TRTC_AUDIO_ROUTE_SPEAKER = 0; // 扬声器, 默认选择扬声器
+    TRTCCloudDef.TRTC_AUDIO_ROUTE_EARPIECE = 1; // 听筒
+    return TRTCCloudDef;
+}());
+exports.TRTCCloudDef = TRTCCloudDef;
