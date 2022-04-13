@@ -3,9 +3,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.pluginVersion = void 0;
 var TrtcCloudImpl_1 = __importDefault(require("./TrtcCloudImpl"));
-exports.pluginVersion = '0.0.1';
+var version = '1.0.2';
 /**
  * TrtcCloud
  *
@@ -24,7 +23,7 @@ var TrtcCloud = /** @class */ (function () {
      */
     TrtcCloud.createInstance = function () {
         console.log('----------------------------------------------------------------');
-        console.log("                        SDK ".concat(exports.pluginVersion, "                    "));
+        console.log("                        SDK ".concat(version, "                    "));
         console.log('----------------------------------------------------------------');
         return TrtcCloudImpl_1.default._createInstance();
     };
@@ -88,7 +87,7 @@ var TrtcCloud = /** @class */ (function () {
      *
      * **Note:**
      * 1. 当 scene 选择为 TRTCAppSceneLIVE 或 TRTCAppSceneVoiceChatRoom 时，您必须通过 TRTCParams 中的 role 字段指定当前用户的角色。
-     * 2. 不管进房是否成功，enterRoom 都必须与 exitRoom 配对使用，在调用 exitRoom 前再次调用 enterRoom 函数会导致不可预期的错误问题。
+     * 2. 不管进房是否成功，enterRoom 都必须与 exitRoom 配对使用，在调用 `exitRoom` 前再次调用 `enterRoom` 函数会导致不可预期的错误问题。
    *
      * @param {TRTCParams} params - 进房参数
      * @param {Number} params.sdkAppId      - 应用标识（必填）
@@ -108,6 +107,7 @@ var TrtcCloud = /** @class */ (function () {
      *
    * @memberof TrtcCloud
      * @example
+     * import { TRTCAppScene } from '@/TrtcCloud/lib/TrtcDefines';
      * this.trtcCloud = TrtcCloud.createInstance(); // 创建实例，只需创建一次
      * const params = {
      *   sdkAppId: 0,
@@ -115,7 +115,7 @@ var TrtcCloud = /** @class */ (function () {
      *   roomId: 12345,
      *   userSig: 'xxx'
      * };
-     * this.trtcCloud.enterRoom(params, TRTCAppScene.TRTCAppScdeneVideoCall);
+     * this.trtcCloud.enterRoom(params, TRTCAppScene.TRTCAppSceneVideoCall);
      */
     TrtcCloud.prototype.enterRoom = function (params, scene) {
         return TrtcCloudImpl_1.default._getInstance().enterRoom(params, scene);
@@ -174,7 +174,8 @@ var TrtcCloud = /** @class */ (function () {
      * @param {String} viewId 用于承载视频画面的渲染控件，使用原生插件中的 TRTCCloudUniPlugin-TXRemoteViewComponent component，需要提供 viewId 属性值，例如 viewId=userId
    * @memberof TrtcCloud
      * @example
-     * this.trtcCloud.startRemoteView(userId, streamType, viewId);
+     * import { TRTCVideoStreamType } from '@/TrtcCloud/lib/TrtcDefines';
+     * this.trtcCloud.startRemoteView(userId, TRTCVideoStreamType.TRTCVideoStreamTypeBig, viewId);
      */
     TrtcCloud.prototype.startRemoteView = function (userId, streamType, viewId) {
         return TrtcCloudImpl_1.default._getInstance().startRemoteView(userId, streamType, viewId);
@@ -190,7 +191,8 @@ var TrtcCloud = /** @class */ (function () {
      * - 辅流（屏幕分享）：TRTCVideoStreamType.TRTCVideoStreamTypeSub
    * @memberof TrtcCloud
      * @example
-     * this.trtcCloud.stopRemoteView(remoteUserId, 0);
+     * import { TRTCVideoStreamType } from '@/TrtcCloud/lib/TrtcDefines';
+     * this.trtcCloud.stopRemoteView(remoteUserId, TRTCVideoStreamType.TRTCVideoStreamTypeBig);
      */
     TrtcCloud.prototype.stopRemoteView = function (userId, streamType) {
         return TrtcCloudImpl_1.default._getInstance().stopRemoteView(userId, streamType);
@@ -206,14 +208,15 @@ var TrtcCloud = /** @class */ (function () {
      * - TRTCAudioQualityMusic，高音质：采样率：48k；双声道 + 全频带；音频裸码率：128kbps；适合需要高保真传输音乐的场景，比如在线K歌、音乐直播等
    * @memberof TrtcCloud
      * @example
-     * this.trtcCloud.startLocalAudio(quality);
+     * import { TRTCAudioQuality } from '@/TrtcCloud/lib/TrtcDefines';
+     * this.trtcCloud.startLocalAudio(TRTCAudioQuality.TRTCAudioQualityDefault);
      */
     TrtcCloud.prototype.startLocalAudio = function (quality) {
         return TrtcCloudImpl_1.default._getInstance().startLocalAudio(quality);
     };
     /**
      * 关闭本地音频的采集和上行<br>
-     * 当关闭本地音频的采集和上行，房间里的其它成员会收到 onUserAudioAvailable(false) 回调通知
+     * 当关闭本地音频的采集和上行，房间里的其它成员会收到 `onUserAudioAvailable(false)` 回调通知
    *
    * @memberof TrtcCloud
      * @example
@@ -221,6 +224,21 @@ var TrtcCloud = /** @class */ (function () {
      */
     TrtcCloud.prototype.stopLocalAudio = function () {
         return TrtcCloudImpl_1.default._getInstance().stopLocalAudio();
+    };
+    /**
+     * 设置音频路由
+     *
+     * 设置“音频路由”，即设置声音是从手机的扬声器还是从听筒中播放出来，因此该接口仅适用于手机等移动端设备。 手机有两个扬声器：一个是位于手机顶部的听筒，一个是位于手机底部的立体声扬声器。
+     * 设置音频路由为听筒时，声音比较小，只有将耳朵凑近才能听清楚，隐私性较好，适合用于接听电话。 设置音频路由为扬声器时，声音比较大，不用将手机贴脸也能听清，因此可以实现“免提”的功能。
+     *
+     * @param {TRTCCloudDef} route 音频路由，即声音由哪里输出（扬声器、听筒）, 默认值：TRTCCloudDef.TRTC_AUDIO_ROUTE_SPEAKER（扬声器）
+     * @memberof TrtcCloud
+     * @example
+     * import { TRTCCloudDef } from '@/TrtcCloud/lib/TrtcDefines';
+     * this.trtcCloud.setAudioRoute(TRTCCloudDef.TRTC_AUDIO_ROUTE_SPEAKER);
+     */
+    TrtcCloud.prototype.setAudioRoute = function (route) {
+        return TrtcCloudImpl_1.default._getInstance().setAudioRoute(route);
     };
     /////////////////////////////////////////////////////////////////////////////////
     //

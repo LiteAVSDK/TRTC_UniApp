@@ -179,6 +179,3 @@ destroyInstance() {
 ## 技术咨询
 
 了解更多详情您可 QQ 咨询：309869925 (技术交流群)
-
-## 相关文档
-- [API 文档](https://web.sdk.qcloud.com/trtc/uniapp/doc/zh-cn/index.html)

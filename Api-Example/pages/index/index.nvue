@@ -44,6 +44,7 @@
 			<text class="trtc-conent-text">Start Remote View</text>
 			<button class="trtc-btn-mid" type="primary" size="mini" @click="startRemoteView">Start Remote View</button>
 		</view>
+		<button class="trtc-btn-long" style="margin-top: 20rpx;" type="primary" @click="switchAudioRoute">切换到 {{audioRoute === 0 ? '听筒' : '免提'}}</button>
 		<button class="trtc-btn-long" style="margin-top: 20rpx;" type="primary" @click="exitRoom">Exit Room</button>
 		<button class="trtc-btn-long" type="primary" @click="destroyInstance">Destroy TrtcCloud</button>
 	</div>
@@ -52,7 +53,7 @@
 <script>
 	import permision from "@/TrtcCloud/permission.js";
 	import TrtcCloud from '@/TrtcCloud/lib/index';
-	import { TRTCAppScene, TRTCVideoStreamType } from '@/TrtcCloud/lib/TrtcDefines';
+	import { TRTCAppScene, TRTCVideoStreamType, TRTCCloudDef } from '@/TrtcCloud/lib/TrtcDefines';
 	import { genTestUserSig } from '@/debug/GenerateTestUserSig';
 	import TrtcLocalView from '@/TrtcCloud/view/TrtcLocalView';
 	import TrtcRemoteView from '@/TrtcCloud/view/TrtcRemoteView';
@@ -76,7 +77,8 @@
 				appScene: TRTCAppScene.TRTCAppSceneVideoCall, // TRTCAppSceneVideoCall
 				isFrontCamera: true,
 				streamType: TRTCVideoStreamType.TRTCVideoStreamTypeBig,
-				remoteUserId: ''
+				remoteUserId: '',
+				audioRoute: TRTCCloudDef.TRTC_AUDIO_ROUTE_SPEAKER,
 			}
 		},
 		mounted() {
@@ -134,6 +136,7 @@
 				});
 				this.trtcCloud = TrtcCloud.createInstance();
 				this.handleEvents();
+				this.sdkAppId && uni.$createTrtcCloudUpload(this.sdkAppId);
 			},
 			enterRoom() {
 				try {
@@ -144,8 +147,10 @@
 						title: 'enterRoom ',
 						icon: 'none',
 					});
+					this.sdkAppId && uni.$enterRoomSuccessUpload(this.sdkAppId);
 				} catch (error) {
 					console.log(`enterRoom error = ${JSON.stringify(error)}`);
+					this.sdkAppId && uni.$enterRoomFailedUpload(JSON.stringify(error), this.sdkAppId);
 				}
 			},
 			exitRoom() {
@@ -163,6 +168,7 @@
 					title: 'localPreview',
 					icon: 'none',
 				});
+				this.sdkAppId && uni.$startLocalPreviewUpload(this.sdkAppId);
 			},
 			stopLocalPreview() {
 				this.trtcCloud.stopLocalPreview();
@@ -174,17 +180,24 @@
 						title: `the remoteUserId: ${this.remoteUserId}`,
 						icon: 'none',
 					});
+					this.sdkAppId && uni.$startRemoteViewSuccessUpload(this.sdkAppId);
 				} else {
 					uni.showToast({
 						title: '无远端用户',
 						icon: 'none',
 					});
+					this.sdkAppId && uni.$startRemoteViewFailedUpload(this.sdkAppId, '远端用户为空');
 				}
 			},
 			stopRemoteView() {
 				if (this.remoteUserId) {
 					this.trtcCloud.stopRemoteView(this.remoteUserId, this.streamType);
 				}
+			},
+			// 听筒、免提 切换
+			switchAudioRoute() {
+				this.audioRoute = this.audioRoute === TRTCCloudDef.TRTC_AUDIO_ROUTE_SPEAKER ? TRTCCloudDef.TRTC_AUDIO_ROUTE_EARPIECE : TRTCCloudDef.TRTC_AUDIO_ROUTE_SPEAKER;
+				this.trtcCloud.setAudioRoute(this.audioRoute);
 			},
 			handleEvents() {
 				this.trtcCloud.on('onWarning', (res) => {
@@ -199,6 +212,7 @@
 						title: `error: ${JSON.stringify(res)}`,
 						icon: 'none',
 					});
+					this.sdkAppId && uni.$onErrorUpload(JSON.stringify(res), this.sdkAppId);
 				});
 				this.trtcCloud.on('onEnterRoom', (result) => {
 					console.log(`- onEnterRoom = ${result}`);
