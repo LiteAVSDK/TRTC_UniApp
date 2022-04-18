@@ -150,7 +150,7 @@
 					this.sdkAppId && uni.$enterRoomSuccessUpload(this.sdkAppId);
 				} catch (error) {
 					console.log(`enterRoom error = ${JSON.stringify(error)}`);
-					this.sdkAppId && uni.$enterRoomFailedUpload(JSON.stringify(error), this.sdkAppId);
+					this.sdkAppId && uni.$enterRoomFailedUpload(this.sdkAppId, JSON.stringify(error));
 				}
 			},
 			exitRoom() {
@@ -212,7 +212,7 @@
 						title: `error: ${JSON.stringify(res)}`,
 						icon: 'none',
 					});
-					this.sdkAppId && uni.$onErrorUpload(JSON.stringify(res), this.sdkAppId);
+					this.sdkAppId && uni.$onErrorUpload(this.sdkAppId, JSON.stringify(res));
 				});
 				this.trtcCloud.on('onEnterRoom', (result) => {
 					console.log(`- onEnterRoom = ${result}`);
