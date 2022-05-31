@@ -4,7 +4,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var TrtcCloudImpl_1 = __importDefault(require("./TrtcCloudImpl"));
-var version = '1.0.2';
+var version = '1.0.3';
 /**
  * TrtcCloud
  *
