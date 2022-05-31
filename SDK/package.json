@@ -1,17 +1,17 @@
 {
-    "name": "TrtcCloud",
-    "version": "1.0.2",
-    "description": "Real-time audio and video SDK for uni-app",
-    "main": "index.js",
-    "directories": {
-        "doc": "docs",
-        "lib": "lib",
-        "test": "test"
-    },
-    "repository": {
-    "type": "git",
-        "url": "https://github.com/LiteAVSDK/TRTC_UniApp.git"
-    },
-    "author": "",
-    "license": "ISC"
+  "name": "TrtcCloud",
+  "version": "1.0.3",
+	"description": "Real-time audio and video SDK for uni-app",
+	"main": "./TrtcCloud/lib/index.js",
+	"directories": {
+		"doc": "docs",
+		"lib": "lib",
+		"test": "test"
+	},
+	"repository": {
+	"type": "git",
+		"url": "https://github.com/LiteAVSDK/TRTC_UniApp.git"
+	},
+	"author": "",
+	"license": "ISC"
 }
