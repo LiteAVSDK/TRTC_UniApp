@@ -148,16 +148,20 @@ var TrtcCloudImpl = /** @class */ (function () {
         TrtcEvent.addEventListener(event, nativeListener);
     };
     TrtcCloudImpl.prototype.off = function (event) {
-        if (event === '*') {
-            for (var _i = 0, _a = this.listenersMap_.entries(); _i < _a.length; _i++) {
-                var _b = _a[_i], key = _b[0], value = _b[1];
-                TrtcEvent.removeListener(key, value);
+        try {
+            if (event === '*') {
+                this.listenersMap_.forEach(function (value, key) {
+                    TrtcEvent.removeEventListener(key, value);
+                });
+                this.listenersMap_.clear();
             }
-            this.listenersMap_.clear();
+            else {
+                TrtcEvent.removeEventListener(event, this.listenersMap_.get(event));
+                this.listenersMap_.delete(event);
+            }
         }
-        else {
-            TrtcEvent.removeListener(event, this.listenersMap_.get(event));
-            this.listenersMap_.delete(event);
+        catch (error) {
+            console.log('off error ', error);
         }
     };
     TrtcCloudImpl.prototype.enterRoom = function (params, scene) {
@@ -173,8 +177,10 @@ var TrtcCloudImpl = /** @class */ (function () {
         return TrtcNativeTrtcCloudModule.exitRoom();
     };
     TrtcCloudImpl.prototype.startLocalPreview = function (isFrontCamera, viewId) {
+        if (isFrontCamera === void 0) { isFrontCamera = true; }
         try {
-            var param = { isFrontCamera: isFrontCamera, userId: viewId };
+            var param = { isFrontCamera: !!isFrontCamera };
+            param = viewId ? __assign(__assign({}, param), { userId: viewId }) : param;
             TrtcNativeTrtcCloudModule.startLocalPreview(param);
         }
         catch (error) {
@@ -204,7 +210,8 @@ var TrtcCloudImpl = /** @class */ (function () {
     };
     TrtcCloudImpl.prototype.startLocalAudio = function (quality) {
         try {
-            TrtcNativeTrtcCloudModule.startLocalAudio(quality);
+            var qualityParam = quality || TrtcDefines_1.TRTCAudioQuality.TRTCAudioQualityDefault;
+            TrtcNativeTrtcCloudModule.startLocalAudio(qualityParam);
         }
         catch (error) {
         }

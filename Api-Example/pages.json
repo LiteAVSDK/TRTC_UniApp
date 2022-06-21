@@ -5,6 +5,36 @@
 			"style": {
 				"navigationBarTitleText": "腾讯云音视频"
 			}
+		},
+		{
+			"path": "pages/examples/1v1/index",
+			"style": {
+				"navigationBarTitleText": "1v1音视频"
+			}
+		},
+		{
+			"path": "pages/examples/multiCall/index",
+			"style": {
+				"navigationBarTitleText": "多人音视频"
+			}
+		},
+		{
+			"path": "pages/examples/videoCall/index",
+			"style": {
+				"navigationBarTitleText": "视频"
+			}
+		},
+		{
+			"path": "pages/examples/audioCall/index",
+			"style": {
+				"navigationBarTitleText": "音频"
+			}
+		},
+    {
+			"path": "pages/examples/localViewHover/index",
+			"style": {
+				"navigationBarTitleText": "本地预览自定义"
+			}
 		}
 	],
 	"globalStyle": {

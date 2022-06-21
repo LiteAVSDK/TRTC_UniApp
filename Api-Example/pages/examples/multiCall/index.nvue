@@ -1,0 +1,245 @@
+<template>
+	<div class="trtc-container">
+		<view class="trtc-video-area">
+			<view class="trtc-video-view" id='root'>
+				<trtc-local-view :viewId="userId" style="height: 403.84rpx;flex: 1;"></trtc-local-view>
+			</view>
+		</view>
+    <view class="trtc-video-area">
+      <view class="trtc-video-remote-view" v-for="(userId, index) in remoteUserIdList" :key="userId">
+				<trtc-remote-view v-if="userId" :userId="userId" :viewId="userId" style="height: 403.84rpx;flex: 1">
+				</trtc-remote-view>
+			</view>
+    </view>
+
+		<view class="trtc-row-area">
+			<text class="trtc-title-text">roomId</text>
+			<input type="text">
+			<input class="trtc-input" style="width: 182.69rpx;" type="number" auto-blur=true :value="roomId"
+				@input="bindInputChange($event, 'roomId')" />
+			<text class="trtc-title-text">userId</text>
+			<input class="trtc-input" style="width: 182.69rpx;" auto-blur=true :value="userId"
+				@input="bindInputChange($event, 'userId')" />
+		</view>
+		<view class="trtc-line"></view>
+    <button class="trtc-btn-long" style="margin-top: 20rpx;" type="primary" @click="enterRoom">Enter Room</button>
+		<button class="trtc-btn-long" style="margin-top: 20rpx;" type="primary" @click="startLocalPreview">Start Local Preview</button>
+		<button class="trtc-btn-long" style="margin-top: 20rpx;" type="primary" @click="exitRoom">Exit Room</button>
+		<button class="trtc-btn-long" type="primary" @click="destroyInstance">Destroy TrtcCloud</button>
+	</div>
+</template>
+
+<script>
+	import permision from "@/TrtcCloud/permission.js";
+	import TrtcCloud from '@/TrtcCloud/lib/index';
+	import { TRTCAppScene, TRTCVideoStreamType, TRTCCloudDef } from '@/TrtcCloud/lib/TrtcDefines';
+	import { genTestUserSig } from '@/debug/GenerateTestUserSig';
+	import TrtcLocalView from '@/TrtcCloud/view/TrtcLocalView';
+	import TrtcRemoteView from '@/TrtcCloud/view/TrtcRemoteView';
+	const roomId = Math.floor(Math.random() * 100000).toString();
+	const userId = 'user_' + Math.floor(Math.random() * 100000).toString();
+
+	export default {
+		components: {
+			TrtcLocalView: TrtcLocalView,
+			TrtcRemoteView: TrtcRemoteView,
+		},
+		data() {
+			return {
+				trtcCloud: null,
+				sdkAppId: 0,
+				userSig: '',
+				roomId: Math.floor(Math.random() * 100000),
+				userId: 'user_' + Math.floor(Math.random() * 100000).toString(),
+				appScene: TRTCAppScene.TRTCAppSceneVideoCall, // TRTCAppSceneVideoCall
+				isFrontCamera: true,
+				streamType: TRTCVideoStreamType.TRTCVideoStreamTypeBig,
+				remoteUserIdList: [],
+			}
+		},
+		mounted() {
+			if (uni.getSystemInfoSync().platform === 'android') {
+				permision.requestAndroidPermission('android.permission.RECORD_AUDIO');
+				permision.requestAndroidPermission('android.permission.CAMERA');
+			}
+
+			// 生成 userSig
+			const { sdkAppId, userSig } = genTestUserSig(this.userId);
+			this.sdkAppId = sdkAppId;
+			this.userSig = userSig;
+			if (!sdkAppId || !userSig) {
+				uni.showToast({
+					title: '请填写 sdkAppId、userSig',
+					icon: 'none'
+				});
+			}
+		},
+    unmounted() {
+			this.handleUninstallEvents();
+		},
+		onUnload() {
+			this.destroyInstance();
+			console.log('- onUnload');
+		},
+		onBackPress() {
+			this.destroyInstance();
+		},
+		methods: {
+			bindInputChange(event, type) {
+				const value = event.detail.value;
+				switch (type) {
+					case 'roomId': {
+						this.roomId = value;
+						break;
+					}
+					case 'userId': {
+						this.userId = value;
+						break;
+					}
+				}
+			},
+			destroyInstance() {
+				if (this.trtcCloud) {
+					TrtcCloud.destroyInstance();
+					this.trtcCloud = null;
+					uni.showToast({
+						title: '销毁实例',
+						icon: 'none'
+					});
+				}
+			},
+			createTrtcCloud() {
+				uni.showToast({
+					title: '创建实例 ',
+					icon: 'none',
+				});
+				this.trtcCloud = TrtcCloud.createInstance();
+				this.handleEvents();
+				this.sdkAppId && uni.$createTrtcCloudUpload(this.sdkAppId);
+			},
+			enterRoom() {
+				try {
+          // 【1】创建实例
+          this.createTrtcCloud();
+          // 【2】进房
+					const { roomId, userId, sdkAppId, appScene, userSig } = this;
+					let param = { roomId: +roomId, userId, sdkAppId, userSig };
+					this.trtcCloud.enterRoom(param, appScene);
+					uni.showToast({
+						title: 'enterRoom ',
+						icon: 'none',
+					});
+					this.sdkAppId && uni.$enterRoomSuccessUpload(this.sdkAppId);
+          this.startLocalAudio();
+				} catch (error) {
+					console.log(`enterRoom error = ${JSON.stringify(error)}`);
+					this.sdkAppId && uni.$enterRoomFailedUpload(this.sdkAppId, JSON.stringify(error));
+				}
+			},
+			exitRoom() {
+				try {
+					this.stopLocalPreview();
+					this.stopRemoteView();
+          this.stopLocalAudio();
+					this.trtcCloud.exitRoom();
+          this.remoteUserIdList = [];
+				} catch (e) {
+					// TODO handle the exception
+				}
+			},
+      // 本地预览
+			startLocalPreview() {
+				this.trtcCloud.startLocalPreview(this.isFrontCamera, this.userId);
+				uni.showToast({
+					title: 'localPreview',
+					icon: 'none',
+				});
+				this.sdkAppId && uni.$startLocalPreviewUpload(this.sdkAppId);
+			},
+			stopLocalPreview() {
+				this.trtcCloud.stopLocalPreview();
+			},
+      startLocalAudio() {
+        this.trtcCloud.startLocalAudio();
+      },
+      stopLocalAudio() {
+        this.trtcCloud.stopLocalAudio();
+      },
+			stopRemoteView() {
+				for (let i = 0; i < this.remoteUserIdList.length; i++) {
+					this.trtcCloud.stopRemoteView(this.remoteUserIdList[i], this.streamType);
+				}
+			},
+			handleEvents() {
+				this.trtcCloud.on('onWarning', (res) => {
+					uni.showToast({
+						title: `onWarning: ${JSON.stringify(res)}`,
+						icon: 'none',
+					});
+				});
+				this.trtcCloud.on('onError', (res) => {
+					console.log('- onError: ', JSON.stringify(res));
+					uni.showToast({
+						title: `error: ${JSON.stringify(res)}`,
+						icon: 'none',
+					});
+					this.sdkAppId && uni.$onErrorUpload(this.sdkAppId, JSON.stringify(res));
+				});
+				this.trtcCloud.on('onEnterRoom', (result) => {
+					console.log(`- onEnterRoom = ${result}`);
+					if (result > 0) {
+						uni.showToast({
+							title: `进房成功，耗时: ${result}ms`,
+							icon: 'none',
+						});
+					} else {
+						console.log(`enter room failed，error code = ${result}`);
+					}
+				});
+				this.trtcCloud.on('onExitRoom', (reason) => {
+					const reasonList = ['主动调用 exitRoom 退房', '被服务器踢出当前房间', '当前房间整个被解散'];
+					uni.showToast({
+						title: `退房 ${reasonList[reason]}`,
+						icon: 'none',
+						duration: 1000
+					});
+				});
+				this.trtcCloud.on('onFirstVideoFrame', (res) => {
+					console.log(`渲染的首帧画面响应 = ${JSON.stringify(res)}`);
+				});
+				this.trtcCloud.on('onRemoteUserEnterRoom', (userId) => {
+					if (!this.remoteUserIdList.includes(userId)) {
+						this.remoteUserIdList.push(userId);
+					}
+					uni.showToast({
+						title: `远端进房: userId = ${userId}`,
+						icon: 'none',
+					});
+				});
+				this.trtcCloud.on('onUserVideoAvailable', (res) => {
+					const {
+						userId,
+						available
+					} = res;
+					if (userId && available && this.remoteUserIdList.includes(userId)) {
+						this.trtcCloud.startRemoteView(userId, this.streamType, userId);
+					}
+				});
+        this.trtcCloud.on('onRemoteUserLeaveRoom', (res) => {
+          const { userId, reason } = res;
+          if (userId) {
+            const list = this.remoteUserIdList.filter(val => val !== userId);
+            this.remoteUserIdList = list;
+          }
+        });
+			},
+      handleUninstallEvents() {
+				this.trtcCloud.off('*');
+			}
+		}
+	}
+</script>
+
+<style>
+
+</style>
