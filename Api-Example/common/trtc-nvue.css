@@ -48,16 +48,25 @@
 
 .trtc-video-area {
 	flex-direction: row;
-	justify-content: center;
 	flex: 1;
+  flex-wrap: wrap;
 }
-
+.trtc-local-view {
+	
+}
 .trtc-video-view {
 	border-width: 1.92rpx;
 	border-color: #BBBBBB;
 	/* background-color: #FFFFFF; */
 	height: 403.84rpx;
 	flex: 1;
+}
+.trtc-video-remote-view {
+  border-width: 1.92rpx;
+	border-color: #BBBBBB;
+	/* background-color: #FFFFFF; */
+	height: 403.84rpx;
+  width: 375rpx;  
 }
 
 .trtc-video-btn {
