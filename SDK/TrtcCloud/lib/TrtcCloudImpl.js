@@ -139,6 +139,10 @@ var TrtcCloudImpl = /** @class */ (function () {
                     callback({ userVolumes: userVolumes, totalVolume: totalVolume });
                     break;
                 }
+                case 'onSwitchRole': {
+                    callback({ code: code, message: message });
+                    break;
+                }
                 default: {
                     callback({ code: code, message: message, extraInfo: extraInfo });
                 }
@@ -174,7 +178,13 @@ var TrtcCloudImpl = /** @class */ (function () {
         }
     };
     TrtcCloudImpl.prototype.exitRoom = function () {
-        return TrtcNativeTrtcCloudModule.exitRoom();
+        TrtcNativeTrtcCloudModule.exitRoom();
+    };
+    TrtcCloudImpl.prototype.switchRole = function (role) {
+        if (role !== TrtcDefines_1.TRTCRoleType.TRTCRoleAnchor && role !== TrtcDefines_1.TRTCRoleType.TRTCRoleAudience) {
+            return;
+        }
+        role && TrtcNativeTrtcCloudModule.switchRole(role);
     };
     TrtcCloudImpl.prototype.startLocalPreview = function (isFrontCamera, viewId) {
         if (isFrontCamera === void 0) { isFrontCamera = true; }
@@ -221,6 +231,23 @@ var TrtcCloudImpl = /** @class */ (function () {
             TrtcNativeTrtcCloudModule.stopLocalAudio();
         }
         catch (error) {
+        }
+    };
+    TrtcCloudImpl.prototype.muteRemoteAudio = function (userId, mute) {
+        try {
+            if (userId) {
+                TrtcNativeTrtcCloudModule.muteRemoteAudio({ userId: userId, mute: !!mute });
+            }
+        }
+        catch (error) {
+        }
+    };
+    TrtcCloudImpl.prototype.muteAllRemoteAudio = function (mute) {
+        try {
+            TrtcNativeTrtcCloudModule.muteAllRemoteAudio(!!mute);
+        }
+        catch (error) {
+            console.log('err', error);
         }
     };
     TrtcCloudImpl.prototype.setAudioRoute = function (route) {
