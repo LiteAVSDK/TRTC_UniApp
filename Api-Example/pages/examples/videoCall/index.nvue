@@ -132,7 +132,6 @@
 						icon: 'none',
 					});
 					this.sdkAppId && uni.$enterRoomSuccessUpload(this.sdkAppId);
-          this.trtcCloud.startLocalAudio();
 				} catch (error) {
 					console.log(`enterRoom error = ${JSON.stringify(error)}`);
 					this.sdkAppId && uni.$enterRoomFailedUpload(this.sdkAppId, JSON.stringify(error));
@@ -161,12 +160,6 @@
 			stopLocalPreview() {
 				this.trtcCloud.stopLocalPreview();
 			},
-      startLocalAudio() {
-        this.trtcCloud.startLocalAudio();
-      },
-      stopLocalAudio() {
-        this.trtcCloud.stopLocalAudio();
-      },
 			stopRemoteView() {
 				if (this.remoteUserId) {
 					this.trtcCloud.stopRemoteView(this.remoteUserId, this.streamType);

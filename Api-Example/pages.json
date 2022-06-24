@@ -30,6 +30,12 @@
 				"navigationBarTitleText": "音频"
 			}
 		},
+		{
+			"path": "pages/examples/switchRole/index",
+			"style": {
+				"navigationBarTitleText": "角色切换"
+			}
+		},
     {
 			"path": "pages/examples/localViewHover/index",
 			"style": {

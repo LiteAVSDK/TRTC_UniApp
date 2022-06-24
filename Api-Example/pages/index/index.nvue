@@ -35,6 +35,10 @@
 							  name: "音频",
 							  url: "/pages/examples/audioCall/index",
 							},
+							{
+							  name: "角色切换",
+							  url: "/pages/examples/switchRole/index",
+							},
               {
                 name: "本地预览自定义",
                 url: "/pages/examples/localViewHover/index",

@@ -139,8 +139,6 @@
 			},
 			exitRoom() {
 				try {
-					this.stopLocalPreview();
-					this.stopRemoteView();
           this.stopLocalAudio();
 					this.trtcCloud.exitRoom();
           this.remoteUserId = '';
@@ -156,11 +154,6 @@
       stopLocalAudio() {
         this.trtcCloud.stopLocalAudio();
       },
-			stopRemoteView() {
-				if (this.remoteUserId) {
-					this.trtcCloud.stopRemoteView(this.remoteUserId, this.streamType);
-				}
-			},
 			handleEvents() {
 				this.trtcCloud.on('onWarning', (res) => {
 					uni.showToast({

@@ -135,6 +135,24 @@ var TrtcCloud = /** @class */ (function () {
         return TrtcCloudImpl_1.default._getInstance().exitRoom();
     };
     /**
+     * 切换角色，仅适用于直播场景（TRTCAppSceneLIVE 和 TRTCAppSceneVoiceChatRoom）
+     *
+     * 在直播场景下，一个用户可能需要在“观众”和“主播”之间来回切换。
+     * 您可以在进房前通过 TRTCParams 中的 role 字段确定角色，也可以通过 switchRole 在进房后切换角色。
+     *
+     * @param {TRTCRoleType} role - 目标角色，默认为主播
+     * - TRTCRoleAnchor: 主播，可以上行视频和音频，一个房间里最多支持50个主播同时上行音视频。
+     * - TRTCRoleAudience: 观众，只能观看，不能上行视频和音频，一个房间里的观众人数没有上限。
+     *
+     * @memberof TrtcCloud
+     * @example
+     * import { TRTCRoleType } from '@/TrtcCloud/lib/TrtcDefines';
+     * this.trtcCloud.switchRole(TRTCRoleType.TRTCRoleAudience);
+     */
+    TrtcCloud.prototype.switchRole = function (role) {
+        return TrtcCloudImpl_1.default._getInstance().switchRole(role);
+    };
+    /**
      * 开启本地视频的预览画面<br>
      * 当开始渲染首帧摄像头画面时，您会收到 `onFirstVideoFrame(null)` 回调
      *
@@ -220,6 +238,31 @@ var TrtcCloud = /** @class */ (function () {
      */
     TrtcCloud.prototype.stopLocalAudio = function () {
         return TrtcCloudImpl_1.default._getInstance().stopLocalAudio();
+    };
+    /**
+     * 静音掉某一个用户的声音，同时不再拉取该远端用户的音频数据流
+     *
+     * @param {String}  userId - 用户 ID
+     * @param {Boolean} mute   - true：静音；false：非静音
+     *
+     * @memberof TrtcCloud
+     * @example
+     * this.trtcCloud.muteRemoteAudio('denny', true);
+     */
+    TrtcCloud.prototype.muteRemoteAudio = function (userId, mute) {
+        return TrtcCloudImpl_1.default._getInstance().muteRemoteAudio(userId, mute);
+    };
+    /**
+     * 静音掉所有用户的声音，同时不再拉取该远端用户的音频数据流
+     *
+     * @param {Boolean} mute - true：静音；false：非静音
+     *
+     * @memberof TrtcCloud
+     * @example
+     * this.trtcCloud.muteAllRemoteAudio(true);
+     */
+    TrtcCloud.prototype.muteAllRemoteAudio = function (mute) {
+        return TrtcCloudImpl_1.default._getInstance().muteAllRemoteAudio(mute);
     };
     /**
      * 设置音频路由

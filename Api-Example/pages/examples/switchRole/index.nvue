@@ -4,15 +4,13 @@
 			<view class="trtc-video-view" id='root'>
 				<trtc-local-view :viewId="userId" style="height: 403.84rpx;flex: 1;"></trtc-local-view>
 			</view>
-			<view class="trtc-video-view">
-				<trtc-remote-view v-if="remoteUserId" :userId="remoteUserId" :viewId="remoteUserId" style="height: 403.84rpx;flex: 1">
+		</view>
+    <view class="trtc-video-area">
+      <view class="trtc-video-remote-view" v-for="(userId, index) in remoteUserIdList" :key="userId">
+				<trtc-remote-view v-if="userId" :userId="userId" :viewId="userId" style="height: 403.84rpx;flex: 1">
 				</trtc-remote-view>
 			</view>
-		</view>
-		<view class="trtc-title-container">
-			<text class="trtc-title-text" style="text-align: center;">Local Preview</text>
-			<text class="trtc-title-text" style="text-align: center;">Remote View</text>
-		</view>
+    </view>
 
 		<view class="trtc-row-area">
 			<text class="trtc-title-text">roomId</text>
@@ -24,33 +22,9 @@
 				@input="bindInputChange($event, 'userId')" />
 		</view>
 		<view class="trtc-line"></view>
-		<view class="trtc-row-area">
-			<text class="trtc-title-text">Step1</text>
-			<text class="trtc-conent-text">Create TrtcCloud</text>
-			<button class="trtc-btn-mid" type="primary" size="mini" @click="createTrtcCloud">Create TrtcCloud</button>
-		</view>
-		<view class="trtc-row-area ">
-			<text class="trtc-title-text">Step2</text>
-			<text class="trtc-conent-text">Enter Room</text>
-			<button class="trtc-btn-mid" type="primary" size="mini" @click="enterRoom">Enter Room</button>
-		</view>
-		<view class="trtc-row-area">
-			<text class="trtc-title-text">Step3</text>
-			<text class="trtc-conent-text">Start Local Preview</text>
-			<button class="trtc-btn-mid" type="primary" size="mini" @click="startLocalPreview">Start Local Preview</button>
-		</view>
-    <view class="trtc-row-area">
-			<text class="trtc-title-text">Step4</text>
-			<text class="trtc-conent-text">Start Local Audio</text>
-			<button class="trtc-btn-mid" type="primary" size="mini" @click="startLocalAudio">Start Local Audio</button>
-		</view>
-		<view class="trtc-row-area">
-			<text class="trtc-title-text">Step5</text>
-			<text class="trtc-conent-text">Start Remote View</text>
-			<button class="trtc-btn-mid" type="primary" size="mini" @click="startRemoteView">Start Remote View</button>
-		</view>
-		<button class="trtc-btn-long" style="margin-top: 20rpx;" type="primary" @click="muteRemoteAudio">{{remoteAudioMuteState ? 'Unmute' : 'Mute'}} Remote Audio</button>
-		<button class="trtc-btn-long" style="margin-top: 20rpx;" type="primary" @click="switchAudioRoute">切换到 {{audioRoute === 0 ? '听筒' : '免提'}}</button>
+    <button class="trtc-btn-long" style="margin-top: 20rpx;" type="primary" @click="enterRoom">Enter Room</button>
+		<button class="trtc-btn-long" style="margin-top: 20rpx;" type="primary" @click="startLocalPreview">Start Local Preview</button>
+		<button class="trtc-btn-long" style="margin-top: 20rpx;" type="primary" @click="switchRole">Switch {{ role === 20 ? '观众' : '主播'}}</button>
 		<button class="trtc-btn-long" style="margin-top: 20rpx;" type="primary" @click="exitRoom">Exit Room</button>
 		<button class="trtc-btn-long" type="primary" @click="destroyInstance">Destroy TrtcCloud</button>
 	</div>
@@ -59,7 +33,7 @@
 <script>
 	import permision from "@/TrtcCloud/permission.js";
 	import TrtcCloud from '@/TrtcCloud/lib/index';
-	import { TRTCAppScene, TRTCVideoStreamType, TRTCCloudDef, TRTCAudioQuality } from '@/TrtcCloud/lib/TrtcDefines';
+	import { TRTCAppScene, TRTCRoleType, TRTCVideoStreamType, TRTCCloudDef } from '@/TrtcCloud/lib/TrtcDefines';
 	import { genTestUserSig } from '@/debug/GenerateTestUserSig';
 	import TrtcLocalView from '@/TrtcCloud/view/TrtcLocalView';
 	import TrtcRemoteView from '@/TrtcCloud/view/TrtcRemoteView';
@@ -81,9 +55,8 @@
 				appScene: TRTCAppScene.TRTCAppSceneVideoCall, // TRTCAppSceneVideoCall
 				isFrontCamera: true,
 				streamType: TRTCVideoStreamType.TRTCVideoStreamTypeBig,
-				remoteUserId: '',
-				audioRoute: TRTCCloudDef.TRTC_AUDIO_ROUTE_SPEAKER,
-				remoteAudioMuteState: false,
+				remoteUserIdList: [],
+				role: TRTCRoleType.TRTCRoleAnchor,
 			}
 		},
 		mounted() {
@@ -103,12 +76,12 @@
 				});
 			}
 		},
+    unmounted() {
+			this.handleUninstallEvents();
+		},
 		onUnload() {
 			this.destroyInstance();
 			console.log('- onUnload');
-		},
-		unmounted() {
-			this.handleUninstallEvents();
 		},
 		onBackPress() {
 			this.destroyInstance();
@@ -148,14 +121,18 @@
 			},
 			enterRoom() {
 				try {
+          // 【1】创建实例
+          this.createTrtcCloud();
+          // 【2】进房
 					const { roomId, userId, sdkAppId, appScene, userSig } = this;
-					let param = { roomId: +roomId, userId, sdkAppId, userSig };
+					let param = { roomId: +roomId, userId, sdkAppId, userSig, scene: TRTCAppScene.TRTCAppSceneLIVE };
 					this.trtcCloud.enterRoom(param, appScene);
 					uni.showToast({
 						title: 'enterRoom ',
 						icon: 'none',
 					});
 					this.sdkAppId && uni.$enterRoomSuccessUpload(this.sdkAppId);
+          this.startLocalAudio();
 				} catch (error) {
 					console.log(`enterRoom error = ${JSON.stringify(error)}`);
 					this.sdkAppId && uni.$enterRoomFailedUpload(this.sdkAppId, JSON.stringify(error));
@@ -167,8 +144,7 @@
 					this.stopRemoteView();
           this.stopLocalAudio();
 					this.trtcCloud.exitRoom();
-          this.remoteUserId = '';
-					this.handleUninstallEvents();
+          this.remoteUserIdList = [];
 				} catch (e) {
 					// TODO handle the exception
 				}
@@ -186,46 +162,19 @@
 				this.trtcCloud.stopLocalPreview();
 			},
       startLocalAudio() {
-        try {
-          this.trtcCloud.startLocalAudio();
-          uni.showToast({ title: 'start local audio', icon: 'none' })
-        } catch (e) {
-
-        }
+        this.trtcCloud.startLocalAudio();
       },
       stopLocalAudio() {
         this.trtcCloud.stopLocalAudio();
       },
-			startRemoteView() {
-				if (this.remoteUserId) {
-					this.trtcCloud.startRemoteView(this.remoteUserId, this.streamType, this.remoteUserId);
-					uni.showToast({
-						title: `the remoteUserId: ${this.remoteUserId}`,
-						icon: 'none',
-					});
-					this.sdkAppId && uni.$startRemoteViewSuccessUpload(this.sdkAppId);
-				} else {
-					uni.showToast({
-						title: '无远端用户',
-						icon: 'none',
-					});
-					this.sdkAppId && uni.$startRemoteViewFailedUpload(this.sdkAppId, '远端用户为空');
-				}
-			},
 			stopRemoteView() {
-				if (this.remoteUserId) {
-					this.trtcCloud.stopRemoteView(this.remoteUserId, this.streamType);
+				for (let i = 0; i < this.remoteUserIdList.length; i++) {
+					this.trtcCloud.stopRemoteView(this.remoteUserIdList[i], this.streamType);
 				}
 			},
-			muteRemoteAudio() {
-				this.remoteAudioMuteState = !this.remoteAudioMuteState;
-				console.log('远端用户 id = ', this.remoteUserId, '状态 = ', this.remoteAudioMuteState);
-				this.remoteUserId && this.trtcCloud.muteRemoteAudio(this.remoteUserId, this.remoteAudioMuteState);
-			},
-			// 听筒、免提 切换
-			switchAudioRoute() {
-				this.audioRoute = this.audioRoute === TRTCCloudDef.TRTC_AUDIO_ROUTE_SPEAKER ? TRTCCloudDef.TRTC_AUDIO_ROUTE_EARPIECE : TRTCCloudDef.TRTC_AUDIO_ROUTE_SPEAKER;
-				this.trtcCloud.setAudioRoute(this.audioRoute);
+			switchRole() {
+				this.role = this.role === TRTCRoleType.TRTCRoleAnchor ? TRTCRoleType.TRTCRoleAudience : TRTCRoleType.TRTCRoleAnchor;
+				this.trtcCloud.switchRole(this.role);
 			},
 			handleEvents() {
 				this.trtcCloud.on('onWarning', (res) => {
@@ -265,7 +214,9 @@
 					console.log(`渲染的首帧画面响应 = ${JSON.stringify(res)}`);
 				});
 				this.trtcCloud.on('onRemoteUserEnterRoom', (userId) => {
-					this.remoteUserId = userId;
+					if (!this.remoteUserIdList.includes(userId)) {
+						this.remoteUserIdList.push(userId);
+					}
 					uni.showToast({
 						title: `远端进房: userId = ${userId}`,
 						icon: 'none',
@@ -276,12 +227,22 @@
 						userId,
 						available
 					} = res;
-					if (userId && available) {
-						this.remoteUserId = userId;
+					if (userId && available && this.remoteUserIdList.includes(userId)) {
+						this.trtcCloud.startRemoteView(userId, this.streamType, userId);
 					}
 				});
+        this.trtcCloud.on('onRemoteUserLeaveRoom', (res) => {
+          const { userId, reason } = res;
+          if (userId) {
+            const list = this.remoteUserIdList.filter(val => val !== userId);
+            this.remoteUserIdList = list;
+          }
+        });
+				this.trtcCloud.on('onSwitchRole', (res) => {
+					console.log('switch role = ', res);
+				});
 			},
-			handleUninstallEvents() {
+      handleUninstallEvents() {
 				this.trtcCloud.off('*');
 			}
 		}
