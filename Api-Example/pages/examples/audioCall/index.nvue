@@ -148,6 +148,7 @@
 			},
 			// 开启本地音频采集和上行
       startLocalAudio() {
+				this.trtcCloud.enableAudioVolumeEvaluation(300);
         this.trtcCloud.startLocalAudio();
       },
 			// 关闭本地音频采集和上行
@@ -207,6 +208,9 @@
 						this.remoteUserId = userId;
             this.trtcCloud.startRemoteView(this.remoteUserId, this.streamType, this.remoteUserId);
 					}
+				});
+				this.trtcCloud.on('onUserVoiceVolume', (res) => {
+					console.log('音量 = ', res);
 				});
 			},
       handleUninstallEvents() {

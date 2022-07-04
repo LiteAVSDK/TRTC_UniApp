@@ -26,6 +26,9 @@
 		<view class="trtc-line"></view>
 		<button class="trtc-btn-long" style="margin-top: 20rpx;" type="primary" @click="enterRoom">Enter Room</button>
     <button class="trtc-btn-long" style="margin-top: 20rpx;" type="primary" @click="startLocalPreview">Start Local Preview</button>
+		<radio-group class="radio-group-container" @change="beautyChange">
+			<label v-for="(item, index) in beautySettings"><radio :value="item.value" />{{item.name}}</label>
+		</radio-group>
 		<button class="trtc-btn-long" style="margin-top: 20rpx;" type="primary" @click="exitRoom">Exit Room</button>
 		<button class="trtc-btn-long" type="primary" @click="destroyInstance">Destroy TrtcCloud</button>
 	</div>
@@ -34,7 +37,7 @@
 <script>
 	import permision from "@/TrtcCloud/permission.js";
 	import TrtcCloud from '@/TrtcCloud/lib/index';
-	import { TRTCAppScene, TRTCVideoStreamType, TRTCCloudDef } from '@/TrtcCloud/lib/TrtcDefines';
+	import { TRTCAppScene, TRTCVideoStreamType, TRTCCloudDef, TXBeautyStyle } from '@/TrtcCloud/lib/TrtcDefines';
 	import { genTestUserSig } from '@/debug/GenerateTestUserSig';
 	import TrtcLocalView from '@/TrtcCloud/view/TrtcLocalView';
 	import TrtcRemoteView from '@/TrtcCloud/view/TrtcRemoteView';
@@ -57,6 +60,11 @@
 				isFrontCamera: true,
 				streamType: TRTCVideoStreamType.TRTCVideoStreamTypeBig,
 				remoteUserId: '',
+				beautySettings: [
+					{ value: TXBeautyStyle.TXBeautyStyleSmooth, name: '光滑' },
+					{ value: TXBeautyStyle.TXBeautyStyleNature, name: '自然' },
+					{ value: TXBeautyStyle.TXBeautyStylePitu, name: '优图' },
+				],
 			}
 		},
 		mounted() {
@@ -165,6 +173,13 @@
 					this.trtcCloud.stopRemoteView(this.remoteUserId, this.streamType);
 				}
 			},
+			// 美颜切换
+			beautyChange(e) {
+				const { value } = e.detail;
+				const beautyLevel = Math.random(1, 10) * 10; // 美颜级别，取值范围0 - 9； 0表示关闭，9表示效果最明显。
+				this.trtcCloud.setBeautyLevel(beautyLevel);
+				this.trtcCloud.setBeautyStyle(value);
+			},
 			handleEvents() {
 				this.trtcCloud.on('onWarning', (res) => {
 					uni.showToast({
@@ -228,5 +243,10 @@
 </script>
 
 <style>
-
+	.radio-group-container {
+		display: flex;
+		flex-direction: row;
+		justify-content: space-around;
+		margin-top: 16px;
+	}
 </style>
