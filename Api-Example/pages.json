@@ -24,6 +24,12 @@
 				"navigationBarTitleText": "视频"
 			}
 		},
+    {
+			"path": "pages/examples/videoRenderSet/index",
+			"style": {
+				"navigationBarTitleText": "本地画面渲染设置"
+			}
+		},
 		{
 			"path": "pages/examples/audioCall/index",
 			"style": {
@@ -40,6 +46,18 @@
 			"path": "pages/examples/localViewHover/index",
 			"style": {
 				"navigationBarTitleText": "本地预览自定义"
+			}
+		},
+    {
+			"path": "pages/examples/screenShare/index",
+			"style": {
+				"navigationBarTitleText": "屏幕分享"
+			}
+		},
+    {
+			"path": "pages/examples/snapShot/index",
+			"style": {
+				"navigationBarTitleText": "截屏"
 			}
 		}
 	],

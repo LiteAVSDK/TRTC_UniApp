@@ -24,36 +24,10 @@
 				@input="bindInputChange($event, 'userId')" />
 		</view>
 		<view class="trtc-line"></view>
-		<view class="trtc-row-area">
-			<text class="trtc-title-text">Step1</text>
-			<text class="trtc-conent-text">Create TrtcCloud</text>
-			<button class="trtc-btn-mid" type="primary" size="mini" @click="createTrtcCloud">Create TrtcCloud</button>
-		</view>
-		<view class="trtc-row-area ">
-			<text class="trtc-title-text">Step2</text>
-			<text class="trtc-conent-text">Enter Room</text>
-			<button class="trtc-btn-mid" type="primary" size="mini" @click="enterRoom">Enter Room</button>
-		</view>
-		<view class="trtc-row-area">
-			<text class="trtc-title-text">Step3</text>
-			<text class="trtc-conent-text">Start Local Preview</text>
-			<button class="trtc-btn-mid" type="primary" size="mini" @click="startLocalPreview">Start Local Preview</button>
-		</view>
-    <view class="trtc-row-area">
-			<text class="trtc-title-text">Step4</text>
-			<text class="trtc-conent-text">Start Local Audio</text>
-			<button class="trtc-btn-mid" type="primary" size="mini" @click="startLocalAudio">Start Local Audio</button>
-		</view>
-		<view class="trtc-row-area">
-			<text class="trtc-title-text">Step5</text>
-			<text class="trtc-conent-text">Start Remote View</text>
-			<button class="trtc-btn-mid" type="primary" size="mini" @click="startRemoteView">Start Remote View</button>
-		</view>
-		<button class="trtc-btn-long" style="margin-top: 20rpx;" type="primary" @click="muteRemoteAudio">{{remoteAudioMuteState ? 'Unmute' : 'Mute'}} Remote Audio</button>
-		<button class="trtc-btn-long" style="margin-top: 20rpx;" type="primary" @click="switchCamera">切到{{isFrontCamera ? '后' : '前'}}置Camera</button>
-		<button class="trtc-btn-long" style="margin-top: 20rpx;" type="primary" @click="muteLocalAudio">{{localAudioMuteState ? 'Unmute' : 'Mute'}} Local Audio</button>
-		<button class="trtc-btn-long" style="margin-top: 20rpx;" type="primary" @click="muteLocalVideo">{{localVideoMuteState ? 'Unmute' : 'Mute'}} Local Video</button>
-		<button class="trtc-btn-long" style="margin-top: 20rpx;" type="primary" @click="switchAudioRoute">切换到 {{audioRoute === 0 ? '听筒' : '免提'}}</button>
+		<button class="trtc-btn-long" style="margin-top: 20rpx;" type="primary" @click="enterRoom">Enter Room</button>
+    <button class="trtc-btn-long" style="margin-top: 20rpx;" type="primary" @click="startLocalPreview">Start Local Preview</button>
+		<button class="trtc-btn-long" style="margin-top: 20rpx;" type="primary" @click="startScreenShare">{{ isScreenShare ? 'Stop' : 'Start' }} Screen Share</button>
+		<button class="trtc-btn-long" style="margin-top: 20rpx;" type="primary" @click="pauseResumeScreenShare">{{ isScreenSharePause ? 'Resume' : 'Pause' }} Screen Share</button>
 		<button class="trtc-btn-long" style="margin-top: 20rpx;" type="primary" @click="exitRoom">Exit Room</button>
 		<button class="trtc-btn-long" type="primary" @click="destroyInstance">Destroy TrtcCloud</button>
 	</div>
@@ -62,7 +36,7 @@
 <script>
 	import permision from "@/TrtcCloud/permission.js";
 	import TrtcCloud from '@/TrtcCloud/lib/index';
-	import { TRTCAppScene, TRTCVideoStreamType, TRTCCloudDef, TRTCAudioQuality } from '@/TrtcCloud/lib/TrtcDefines';
+	import { TRTCAppScene, TRTCVideoStreamType, TRTCCloudDef, TRTCVideoResolution, TRTCVideoResolutionMode, TRTCShareSource } from '@/TrtcCloud/lib/TrtcDefines';
 	import { genTestUserSig } from '@/debug/GenerateTestUserSig';
 	import TrtcLocalView from '@/TrtcCloud/view/TrtcLocalView';
 	import TrtcRemoteView from '@/TrtcCloud/view/TrtcRemoteView';
@@ -85,10 +59,8 @@
 				isFrontCamera: true,
 				streamType: TRTCVideoStreamType.TRTCVideoStreamTypeBig,
 				remoteUserId: '',
-				audioRoute: TRTCCloudDef.TRTC_AUDIO_ROUTE_SPEAKER,
-				remoteAudioMuteState: false,
-				localAudioMuteState: false,
-				localVideoMuteState: false,
+				isScreenShare: false,
+				isScreenSharePause: false,
 			}
 		},
 		mounted() {
@@ -108,12 +80,12 @@
 				});
 			}
 		},
+    unmounted() {
+			this.handleUninstallEvents();
+		},
 		onUnload() {
 			this.destroyInstance();
 			console.log('- onUnload');
-		},
-		unmounted() {
-			this.handleUninstallEvents();
 		},
 		onBackPress() {
 			this.destroyInstance();
@@ -153,6 +125,9 @@
 			},
 			enterRoom() {
 				try {
+          // 【1】创建实例
+          this.createTrtcCloud();
+          // 【2】进房
 					const { roomId, userId, sdkAppId, appScene, userSig } = this;
 					let param = { roomId: +roomId, userId, sdkAppId, userSig };
 					this.trtcCloud.enterRoom(param, appScene);
@@ -173,7 +148,6 @@
           this.stopLocalAudio();
 					this.trtcCloud.exitRoom();
           this.remoteUserId = '';
-					this.handleUninstallEvents();
 				} catch (e) {
 					// TODO handle the exception
 				}
@@ -190,60 +164,36 @@
 			stopLocalPreview() {
 				this.trtcCloud.stopLocalPreview();
 			},
-			// 切前置、后置
-			switchCamera() {
-				this.isFrontCamera = !this.isFrontCamera;
-				this.trtcCloud.switchCamera(this.isFrontCamera);
-			},
-      muteLocalVideo() {
-				this.localVideoMuteState = !this.localVideoMuteState;
-				this.trtcCloud.muteLocalVideo(TRTCVideoStreamType.TRTCVideoStreamTypeBig, this.localVideoMuteState);
-			},
-			startLocalAudio() {
-        try {
-          this.trtcCloud.startLocalAudio();
-          uni.showToast({ title: 'start local audio', icon: 'none' })
-        } catch (e) {
-
-        }
-      },
-      stopLocalAudio() {
-        this.trtcCloud.stopLocalAudio();
-      },
-			muteLocalAudio() {
-				this.localAudioMuteState = !this.localAudioMuteState;
-				this.trtcCloud.muteLocalAudio(this.localAudioMuteState);
-			},
-			startRemoteView() {
-				if (this.remoteUserId) {
-					this.trtcCloud.startRemoteView(this.remoteUserId, this.streamType, this.remoteUserId);
-					uni.showToast({
-						title: `the remoteUserId: ${this.remoteUserId}`,
-						icon: 'none',
-					});
-					this.sdkAppId && uni.$startRemoteViewSuccessUpload(this.sdkAppId);
-				} else {
-					uni.showToast({
-						title: '无远端用户',
-						icon: 'none',
-					});
-					this.sdkAppId && uni.$startRemoteViewFailedUpload(this.sdkAppId, '远端用户为空');
-				}
-			},
 			stopRemoteView() {
 				if (this.remoteUserId) {
 					this.trtcCloud.stopRemoteView(this.remoteUserId, this.streamType);
 				}
 			},
-			muteRemoteAudio() {
-				this.remoteAudioMuteState = !this.remoteAudioMuteState;
-				console.log('远端用户 id = ', this.remoteUserId, '状态 = ', this.remoteAudioMuteState);
-				this.remoteUserId && this.trtcCloud.muteRemoteAudio(this.remoteUserId, this.remoteAudioMuteState);
+			// 开始屏幕分享
+			startScreenShare() {
+				if (!this.isScreenShare) {
+					const encParams = {
+						videoResolution: TRTCVideoResolution.TRTCVideoResolution_640_360,
+						videoResolutionMode: TRTCVideoResolutionMode.TRTCVideoResolutionModePortrait,
+						videoFps: 15,
+						videoBitrate: 900,
+						minVideoBitrate: 200,
+						enableAdjustRes: false,
+					};
+					this.trtcCloud.startScreenCapture(TRTCVideoStreamType.TRTCVideoStreamTypeSub, encParams, TRTCShareSource.ByReplaykit); // TRTCShareSource.InApp
+				} else {
+					this.trtcCloud.stopScreenCapture();
+				}
+				this.isScreenShare = !this.isScreenShare;
 			},
-			// 听筒、免提 切换
-			switchAudioRoute() {
-				this.audioRoute = this.audioRoute === TRTCCloudDef.TRTC_AUDIO_ROUTE_SPEAKER ? TRTCCloudDef.TRTC_AUDIO_ROUTE_EARPIECE : TRTCCloudDef.TRTC_AUDIO_ROUTE_SPEAKER;
-				this.trtcCloud.setAudioRoute(this.audioRoute);
+			// 暂停/继续 屏幕分享
+			pauseResumeScreenShare() {
+				if (!this.isScreenSharePause) {
+					this.trtcCloud.pauseScreenCapture();
+				} else {
+					this.trtcCloud.resumeScreenCapture();
+				}
+				this.isScreenSharePause = !this.isScreenSharePause;
 			},
 			handleEvents() {
 				this.trtcCloud.on('onWarning', (res) => {
@@ -294,13 +244,25 @@
 						userId,
 						available
 					} = res;
-					console.log('onUserVideoAvailable = ', res);
 					if (userId && available) {
 						this.remoteUserId = userId;
+            this.trtcCloud.startRemoteView(this.remoteUserId, this.streamType, this.remoteUserId);
 					}
 				});
+				this.trtcCloud.on('onScreenCaptureStarted', (res) => {
+					console.log('onScreenCaptureStarted ==== ', res);
+				});
+				this.trtcCloud.on('onScreenCapturePaused', (res) => {
+					console.log('onScreenCapturePaused ==== ', res);
+				});
+				this.trtcCloud.on('onScreenCaptureResumed', (res) => {
+					console.log('onScreenCaptureResumed ==== ', res);
+				});
+				this.trtcCloud.on('onScreenCaptureStopped', (res) => {
+					console.log('onScreenCaptureStopped ==== ', res);
+				});
 			},
-			handleUninstallEvents() {
+      handleUninstallEvents() {
 				this.trtcCloud.off('*');
 			}
 		}

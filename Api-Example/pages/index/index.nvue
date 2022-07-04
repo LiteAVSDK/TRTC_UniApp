@@ -31,6 +31,10 @@
                 name: "视频",
                 url: "/pages/examples/videoCall/index",
               },
+              {
+                name: "本地画面渲染设置",
+                url: "/pages/examples/videoRenderSet/index",
+              },
 							{
 							  name: "音频",
 							  url: "/pages/examples/audioCall/index",
@@ -42,6 +46,14 @@
               {
                 name: "本地预览自定义",
                 url: "/pages/examples/localViewHover/index",
+              },
+              {
+                name: "屏幕分享",
+                url: "/pages/examples/screenShare/index",
+              },
+              {
+                name: "截屏",
+                url: "/pages/examples/snapShot/index",
               }
             ]
           }

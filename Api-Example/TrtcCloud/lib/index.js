@@ -4,7 +4,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var TrtcCloudImpl_1 = __importDefault(require("./TrtcCloudImpl"));
-var version = '1.0.5';
+var TrtcDefines_1 = require("./TrtcDefines");
+var version = '1.0.6';
 /**
  * TrtcCloud
  *
@@ -168,6 +169,19 @@ var TrtcCloud = /** @class */ (function () {
         return TrtcCloudImpl_1.default._getInstance().startLocalPreview(isFrontCamera, viewId);
     };
     /**
+     * 切换前置或后置摄像头
+     *
+     * @param {Boolean} isFrontCamera 前置、后置摄像头，true：前置摄像头；false：后置摄像头
+     * @memberof TrtcCloud
+     * @example
+     * // 切换前置或后置摄像头
+     * const isFrontCamera = true;
+     * this.trtcCloud.switchCamera(isFrontCamera);
+     */
+    TrtcCloud.prototype.switchCamera = function (isFrontCamera) {
+        return TrtcCloudImpl_1.default._getInstance().switchCamera(isFrontCamera);
+    };
+    /**
      * 停止本地视频采集及预览
      *
      * @memberof TrtcCloud
@@ -176,6 +190,44 @@ var TrtcCloud = /** @class */ (function () {
      */
     TrtcCloud.prototype.stopLocalPreview = function () {
         return TrtcCloudImpl_1.default._getInstance().stopLocalPreview();
+    };
+    /**
+     * 设置本地画面的渲染参数，可设置的参数包括有：画面的旋转角度、填充模式以及左右镜像等。
+     *
+     * **Note:**
+     *  - **iOS 暂不支持该接口功能**
+     *
+     * @param {TRTCRenderParams} params - 本地图像的参数
+     * @param {TRTCVideoRotation} params.rotation - 图像的顺时针旋转角度，支持90、180以及270旋转角度，默认值：TRTCVideoRotation.TRTCVideoRotation_0
+     * @param {TRTCVideoFillMode} params.fillMode - 视频画面填充模式，填充（画面可能会被拉伸裁剪）或适应（画面可能会有黑边），默认值：TRTCVideoFillMode.TRTCVideoFillMode_Fill
+     * @param {TRTCVideoMirrorType} params.mirrorType - 画面镜像模式，默认值：TRTCVideoMirrorType.TRTCVideoMirrorType_Auto
+     *
+     * @memberof TrtcCloud
+     * @example
+     * import { TRTCVideoRotation, TRTCVideoFillMode, TRTCVideoMirrorType } from '@/TrtcCloud/lib/TrtcDefines';
+     * const renderParams = {
+     *  rotation: TRTCVideoRotation.TRTCVideoRotation_0,
+     *  fillMode: TRTCVideoFillMode.TRTCVideoFillMode_Fill,
+     *  mirrorType: TRTCVideoMirrorType.TRTCVideoMirrorType_Auto
+     * };
+     * this.trtcCloud.setLocalRenderParams(renderParams);
+     */
+    TrtcCloud.prototype.setLocalRenderParams = function (params) {
+        return TrtcCloudImpl_1.default._getInstance().setLocalRenderParams(params);
+    };
+    /**
+     * 暂停/恢复发布本地的视频流
+     *
+     * 该接口可以暂停（或恢复）发布本地的视频画面，暂停之后，同一房间中的其他用户将无法继续看到自己画面。 该接口在指定 TRTCVideoStreamTypeBig 时等效于 start/stopLocalPreview 这两个接口，但具有更好的响应速度。 因为 start/stopLocalPreview 需要打开和关闭摄像头，而打开和关闭摄像头都是硬件设备相关的操作，非常耗时。 相比之下，muteLocalVideo 只需要在软件层面对数据流进行暂停或者放行即可，因此效率更高，也更适合需要频繁打开关闭的场景。 当暂停/恢复发布指定 TRTCVideoStreamTypeBig 后，同一房间中的其他用户将会收到 onUserVideoAvailable 回调通知。 当暂停/恢复发布指定 TRTCVideoStreamTypeSub 后，同一房间中的其他用户将会收到 onUserSubStreamAvailable 回调通知。
+     * @param {TRTCVideoStreamType} streamType 要暂停/恢复的视频流类型（仅支持 TRTCVideoStreamTypeBig 和 TRTCVideoStreamTypeSub）
+     * @param {Boolean} mute - true：屏蔽；false：开启，默认值：false
+     *
+     * @memberof TrtcCloud
+     * @example
+     * this.trtcCloud.muteLocalVideo(TRTCVideoStreamType.TRTCVideoStreamTypeBig, true);
+     */
+    TrtcCloud.prototype.muteLocalVideo = function (streamType, mute) {
+        return TrtcCloudImpl_1.default._getInstance().muteLocalVideo(streamType, mute);
     };
     /**
      * 显示远端视频或辅流<br>
@@ -212,6 +264,22 @@ var TrtcCloud = /** @class */ (function () {
         return TrtcCloudImpl_1.default._getInstance().stopRemoteView(userId, streamType);
     };
     /**
+     * 视频画面截图
+     *
+     * 您可以通过本接口截取本地的视频画面，远端用户的主路画面以及远端用户的辅路（屏幕分享）画面。
+     * @param {String | null} userId 用户 ID，如指定 null 表示截取本地的视频画面
+     * @param {TRTCVideoStreamType} streamType 视频流类型，可选择截取主路画面（TRTCVideoStreamTypeBig，常用于摄像头）或辅路画面（TRTCVideoStreamTypeSub，常用于屏幕分享）
+     *
+     * @memberof TrtcCloud
+     * @example
+     * import { TRTCVideoStreamType } from '@/TrtcCloud/lib/TrtcDefines';
+     * this.trtcCloud.snapshotVideo(null, TRTCVideoStreamType.TRTCVideoStreamTypeBig); // 截取本地画面
+     * this.trtcCloud.snapshotVideo(this.remoteUserId, TRTCVideoStreamType.TRTCVideoStreamTypeBig); // 截取远端指定用户画面
+     */
+    TrtcCloud.prototype.snapshotVideo = function (userId, streamType, listener) {
+        return TrtcCloudImpl_1.default._getInstance().snapshotVideo(userId, streamType, listener);
+    };
+    /**
      * 开启本地音频的采集和上行, 并设置音频质量<br>
      * 该函数会启动麦克风采集，并将音频数据传输给房间里的其他用户。 SDK 不会默认开启本地音频采集和上行，您需要调用该函数开启，否则房间里的其他用户将无法听到您的声音<br>
      * 主播端的音质越高，观众端的听感越好，但传输所依赖的带宽也就越高，在带宽有限的场景下也更容易出现卡顿
@@ -238,6 +306,23 @@ var TrtcCloud = /** @class */ (function () {
      */
     TrtcCloud.prototype.stopLocalAudio = function () {
         return TrtcCloudImpl_1.default._getInstance().stopLocalAudio();
+    };
+    /**
+     * 静音本地的音频
+     *
+     * 当静音本地音频后，房间里的其它成员会收到 onUserAudioAvailable(false) 回调通知。
+     * 与 stopLocalAudio 不同之处在于，muteLocalAudio 并不会停止发送音视频数据，而是会继续发送码率极低的静音包。
+     * 在对录制质量要求很高的场景中，选择 muteLocalAudio 是更好的选择，能录制出兼容性更好的 MP4 文件。
+     * 这是由于 MP4 等视频文件格式，对于音频的连续性是要求很高的，简单粗暴地 stopLocalAudio 会导致录制出的 MP4 不易播放。
+     *
+     * @param {Boolean} mute - true：屏蔽；false：开启，默认值：false
+     *
+     * @memberof TrtcCloud
+     * @example
+     * this.trtcCloud.muteLocalAudio(true);
+     */
+    TrtcCloud.prototype.muteLocalAudio = function (mute) {
+        return TrtcCloudImpl_1.default._getInstance().muteLocalAudio(mute);
     };
     /**
      * 静音掉某一个用户的声音，同时不再拉取该远端用户的音频数据流
@@ -278,6 +363,115 @@ var TrtcCloud = /** @class */ (function () {
      */
     TrtcCloud.prototype.setAudioRoute = function (route) {
         return TrtcCloudImpl_1.default._getInstance().setAudioRoute(route);
+    };
+    /**
+     * 启用或关闭音量大小提示
+     *
+     * 开启此功能后，SDK 会在 onUserVoiceVolume() 中反馈对每一路声音音量大小值的评估。
+     *
+     * **Note:**
+     * - 如需打开此功能，请在 startLocalAudio 之前调用才可以生效。
+     *
+     * @param {Number} interval - 设置 onUserVoiceVolume 回调的触发间隔，单位为ms，最小间隔为100ms，如果小于等于0则会关闭回调，建议设置为300ms
+     * @memberof TrtcCloud
+     * @example
+     * this.trtcCloud.enableAudioVolumeEvaluation(300);
+     */
+    TrtcCloud.prototype.enableAudioVolumeEvaluation = function (interval) {
+        return TrtcCloudImpl_1.default._getInstance().enableAudioVolumeEvaluation(interval);
+    };
+    /////////////////////////////////////////////////////////////////////////////////
+    //
+    //                      屏幕分享
+    //
+    /////////////////////////////////////////////////////////////////////////////////
+    /**
+     * 设置屏幕分享（即辅路）的视频编码参数
+     *
+     * 该接口可以设定远端用户所看到的屏幕分享（即辅路）的画面质量，同时也能决定云端录制出的视频文件中屏幕分享的画面质量。 请注意如下两个接口的差异：
+     *  - setVideoEncoderParam 用于设置主路画面（TRTCVideoStreamTypeBig，一般用于摄像头）的视频编码参数。
+     *  - setSubStreamEncoderParam 用于设置辅路画面（TRTCVideoStreamTypeSub，一般用于屏幕分享）的视频编码参数。
+     *
+     * **Note:**
+     *  - 即使您使用主路传输屏幕分享（在调用 startScreenCapture 时设置 type=TRTCVideoStreamTypeBig），依然要使用 setSubStreamEncoderParam 设定屏幕分享的编码参数，而不要使用 setVideoEncoderParam
+     * @param {TRTCVideoEncParam} param	辅流编码参数，详情请参考 TRTCVideoEncParam。
+     * @memberof TrtcCloud
+     * @example
+     * const params = {
+     *   videoResolution: TRTCVideoResolution.TRTCVideoResolution_640_360,
+     *   videoResolutionMode: TRTCVideoResolutionMode.TRTCVideoResolutionModePortrait,
+     *   videoFps: 15,
+     *   videoBitrate: 900,
+     *   minVideoBitrate: 200,
+     *   enableAdjustRes: false,
+     * };
+     * this.trtcCloud.setSubStreamEncoderParam(params);
+     */
+    TrtcCloud.prototype.setSubStreamEncoderParam = function (param) {
+        return TrtcCloudImpl_1.default._getInstance().setSubStreamEncoderParam(param);
+    };
+    /**
+     * 启动屏幕分享
+     *
+     * **Note:**
+     *  - 一个用户同时最多只能上传一条主路（TRTCVideoStreamTypeBig）画面和一条辅路（TRTCVideoStreamTypeSub）画面，
+     * 默认情况下，屏幕分享使用辅路画面，如果使用主路画面，建议您提前停止摄像头采集（stopLocalPreview）避免相互冲突。
+     *  - **仅支持 iOS 13.0 及以上系统，进行应用内的屏幕分享**
+     *
+     * @param {TRTCVideoStreamType} streamType 屏幕分享使用的线路，可以设置为主路（TRTCVideoStreamTypeBig）或者辅路（TRTCVideoStreamTypeSub），推荐使用
+     * @param {TRTCVideoEncParam} encParams 屏幕分享的画面编码参数，可以设置为 null，表示让 SDK 选择最佳的编码参数（分辨率、码率等）。即使在调用 startScreenCapture 时设置 type=TRTCVideoStreamTypeBig，依然可以使用此接口更新屏幕分享的编码参数。
+     * @memberof TrtcCloud
+     * @example
+     * import { TRTCVideoResolution, TRTCVideoResolutionMode, TRTCVideoStreamType} from '@/TrtcCloud/lib/TrtcDefines';
+     * const encParams = {
+     *   videoResolution: TRTCVideoResolution.TRTCVideoResolution_640_360,
+     *   videoResolutionMode: TRTCVideoResolutionMode.TRTCVideoResolutionModePortrait,
+     *   videoFps: 15,
+     *   videoBitrate: 900,
+     *   minVideoBitrate: 200,
+     *   enableAdjustRes: false,
+     * };
+     * this.trtcCloud.startScreenCapture(TRTCVideoStreamType.TRTCVideoStreamTypeSub, encParams);
+     */
+    TrtcCloud.prototype.startScreenCapture = function (streamType, encParams) {
+        if (streamType === void 0) { streamType = TrtcDefines_1.TRTCVideoStreamType.TRTCVideoStreamTypeSub; }
+        if (encParams === void 0) { encParams = null; }
+        return TrtcCloudImpl_1.default._getInstance().startScreenCapture(streamType, encParams);
+    };
+    /////////////////////////////////////////////////////////////////////////////////
+    //
+    //                      美颜 + 水印
+    //
+    /////////////////////////////////////////////////////////////////////////////////
+    /**
+     * 设置美颜（磨皮）算法
+     * TRTC 内置多种不同的磨皮算法，您可以选择最适合您产品定位的方案
+     *
+     * **Note:**
+     * - 设置美颜前，先调用 `setBeautyLevel` 设置美颜级别。否则美颜级别为 0 表示关闭美颜
+     *
+     * @param {TXBeautyStyle} beautyStyle 美颜风格，TXBeautyStyleSmooth：光滑；TXBeautyStyleNature：自然；TXBeautyStylePitu：优图
+     * @memberof TrtcCloud
+     * @example
+     * import { TXBeautyStyle } from '@/TrtcCloud/lib/TrtcDefines';
+     * const beautyLevel = 5; // 美颜级别，取值范围0 - 9； 0表示关闭，9表示效果最明显。
+     * this.trtcCloud.setBeautyLevel(beautyLevel);
+     * this.trtcCloud.setBeautyStyle(TXBeautyStyle.TXBeautyStyleSmooth);
+     */
+    TrtcCloud.prototype.setBeautyStyle = function (beautyStyle) {
+        return TrtcCloudImpl_1.default._getInstance().setBeautyStyle(beautyStyle);
+    };
+    /**
+     * 设置美颜级别
+     * @param {Number} beautyLevel	美颜级别，取值范围0 - 9； 0表示关闭，9表示效果最明显。
+     *
+     * @memberof TrtcCloud
+     * @example
+     * const beautyLevel = 5; // 美颜级别，取值范围0 - 9； 0表示关闭，9表示效果最明显。
+     * this.trtcCloud.setBeautyLevel(beautyLevel);
+     */
+    TrtcCloud.prototype.setBeautyLevel = function (beautyLevel) {
+        return TrtcCloudImpl_1.default._getInstance().setBeautyLevel(beautyLevel);
     };
     /////////////////////////////////////////////////////////////////////////////////
     //
@@ -348,6 +542,16 @@ var TrtcCloud = /** @class */ (function () {
      */
     TrtcCloud.prototype.onExitRoom = function (reason) { };
     /**
+     * 切换角色的事件回调
+     *
+     * 调用 TRTCCloud 中的 switchRole() 接口会切换主播和观众的角色，该操作会伴随一个线路切换的过程， 待 SDK 切换完成后，会抛出 onSwitchRole() 事件回调
+     *
+     * @event TRTCCallback#onSwitchRole
+     * @param {Number} code 错误码，[详见](https://cloud.tencent.com/document/product/647/38308#.E8.AD.A6.E5.91.8A.E7.A0.81.E8.A1.A8)
+     * @param {String} message 错误信息
+     */
+    TrtcCloud.prototype.onSwitchRole = function (code, message) { };
+    /**
      * 开始渲染本地或远程用户的首帧画面<br>
      * 如果 userId 为 null，代表开始渲染本地采集的摄像头画面，需要您先调用 `startLocalPreview` 触发。 如果 userId 不为 null，代表开始渲染远程用户的首帧画面，需要您先调用 `startRemoteView` 触发<br>
      * 只有当您调用 `startLocalPreview()、startRemoteView() 或 startRemoteSubStreamView()` 之后，才会触发该回调
@@ -368,6 +572,14 @@ var TrtcCloud = /** @class */ (function () {
      * @param {String} userId 远程用户 ID
      */
     TrtcCloud.prototype.onFirstAudioFrame = function (userId) { };
+    /**
+     * 截图完成时回调
+     *
+     * @event TRTCCallback#onSnapshotComplete
+     * @param {String} base64Data 截图对应的 base64 数据
+     * @param {String} message 错误信息
+     */
+    TrtcCloud.prototype.onSnapshotComplete = function (base64Data, message) { };
     /**
      * 麦克风准备就绪
      *
@@ -452,15 +664,44 @@ var TrtcCloud = /** @class */ (function () {
     TrtcCloud.prototype.onUserVideoAvailable = function (userId, available) { };
     /**
      * 用于提示音量大小的回调，包括每个 userId 的音量和远端总音量<br>
-     * 您可以通过调用 TrtcCloud 中的 enableAudioVolumeEvaluation 接口来开关这个回调或者设置它的触发间隔。 需要注意的是，调用 enableAudioVolumeEvaluation 开启音量回调后，无论频道内是否有人说话，都会按设置的时间间隔调用这个回调; 如果没有人说话，则 userVolumes 为空，totalVolume 为 0
+     * SDK 可以评估每一路音频的音量大小，并每隔一段时间抛出该事件回调，您可以根据音量大小在 UI 上做出相应的提示，比如“波形图”或“音量槽”。 要完成这个功能， 您需要先调用 enableAudioVolumeEvaluation 开启这个能力并设定事件抛出的时间间隔。 需要补充说明的是，无论当前房间中是否有人说话，SDK 都会按照您设定的时间间隔定时抛出此事件回调，只不过当没有人说话时，userVolumes 为空，totalVolume 为 0。
      *
      * **Note:**
-     * - userId 为本地用户 ID 时表示自己的音量，userVolumes 内仅包含正在说话（音量不为0）的用户音量信息
+     * - userVolumes 为一个数组，对于数组中的每一个元素，当 userId 为空时表示本地麦克风采集的音量大小，当 userId 不为空时代表远端用户的音量大小
      *
-     * @param {Number} userVolumes 所有正在说话的房间成员的音量，取值范围：0 - 100
-     * @param {Number} totalVolume 所有远端成员的总音量, 取值范围：0 - 100
+     * @event TRTCCallback#onUserVoiceVolume
+     * @param {Array} userVolumes 是一个数组，用于承载所有正在说话的用户的音量大小，取值范围 0 - 100
+     * @param {Number} totalVolume 所有远端用户的总音量大小, 取值范围 0 - 100
      */
     TrtcCloud.prototype.onUserVoiceVolume = function (userVolumes, totalVolume) { };
+    /**
+     * 屏幕分享开启的事件回调
+     *
+     * 当您通过 startScreenCapture 等相关接口启动屏幕分享时，SDK 便会抛出此事件回调
+     * @event TRTCCallback#onScreenCaptureStarted
+     */
+    TrtcCloud.prototype.onScreenCaptureStarted = function () { };
+    /**
+     * 屏幕分享停止的事件回调
+     *
+     * 当您通过 stopScreenCapture 停止屏幕分享时，SDK 便会抛出此事件回调
+     * @event TRTCCallback#onScreenCapturePaused
+     * @param {Number} reason 停止原因，0：用户主动停止；1：屏幕窗口关闭导致停止；2：表示屏幕分享的显示屏状态变更（如接口被拔出、投影模式变更等）
+     */
+    TrtcCloud.prototype.onScreenCapturePaused = function (reason) { };
+    /**
+     * 屏幕分享恢复的事件回调
+     * 当您通过 resumeScreenCapture 恢复屏幕分享时，SDK 便会抛出此事件回调
+     * @event TRTCCallback#onScreenCaptureResumed
+     */
+    TrtcCloud.prototype.onScreenCaptureResumed = function () { };
+    /**
+     * 屏幕分享停止的事件回调
+     * 当您通过 stopScreenCapture 停止屏幕分享时，SDK 便会抛出此事件回调
+     * @event TRTCCallback#onScreenCaptureStopped
+     * @param {Number} reason 停止原因，0：用户主动停止；1：屏幕窗口关闭导致停止；2：表示屏幕分享的显示屏状态变更（如接口被拔出、投影模式变更等）
+     */
+    TrtcCloud.prototype.onScreenCaptureStopped = function (reason) { };
     return TrtcCloud;
 }());
 exports.default = TrtcCloud;
