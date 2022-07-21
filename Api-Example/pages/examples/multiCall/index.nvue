@@ -238,6 +238,10 @@
             this.remoteUserIdList = list;
           }
         });
+        this.trtcCloud.on('onUserSubStreamAvailable', (res) => {
+          const { userId, available } = res;
+          console.log('onUserSubStreamAvailable ', userId, available);
+        });
 			},
       handleUninstallEvents() {
 				this.trtcCloud.off('*');

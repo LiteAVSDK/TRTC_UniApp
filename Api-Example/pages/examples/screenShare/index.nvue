@@ -180,7 +180,7 @@
 						minVideoBitrate: 200,
 						enableAdjustRes: false,
 					};
-					this.trtcCloud.startScreenCapture(TRTCVideoStreamType.TRTCVideoStreamTypeSub, encParams, TRTCShareSource.ByReplaykit); // TRTCShareSource.InApp
+					this.trtcCloud.startScreenCapture(TRTCVideoStreamType.TRTCVideoStreamTypeSub, encParams);
 				} else {
 					this.trtcCloud.stopScreenCapture();
 				}
