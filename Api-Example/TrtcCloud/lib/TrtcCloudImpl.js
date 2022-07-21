@@ -121,7 +121,7 @@ var TrtcCloudImpl = /** @class */ (function () {
         if (typeof event !== 'string') {
         }
         var nativeListener = function (res) { return __awaiter(_this, void 0, void 0, function () {
-            var _a, data, code, message, extraInfo, result, reason, userId, streamType, width, height, userId, localQuality, remoteQuality, userId, userId, reason, streamType, statics, userId, available, userId, available, userVolumes, totalVolume;
+            var _a, data, code, message, extraInfo, result, reason, userId, streamType, width, height, userId, localQuality, remoteQuality, userId, userId, reason, streamType, statics, userId, available, userId, available, userVolumes, totalVolume, userId, available;
             return __generator(this, function (_b) {
                 _a = res.data, data = _a === void 0 ? [] : _a;
                 code = data[0];
@@ -226,6 +226,12 @@ var TrtcCloudImpl = /** @class */ (function () {
                     }
                     case 'onScreenCaptureStopped': {
                         callback({ code: code, message: message });
+                        break;
+                    }
+                    case 'onUserSubStreamAvailable': {
+                        userId = code || '';
+                        available = message;
+                        callback({ userId: userId, available: available });
                         break;
                     }
                     case 'onSnapshotComplete': {

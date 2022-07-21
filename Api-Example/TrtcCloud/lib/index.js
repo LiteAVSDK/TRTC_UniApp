@@ -1,11 +1,27 @@
 "use strict";
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __exportStar = (this && this.__exportStar) || function(m, exports) {
+    for (var p in m) if (p !== "default" && !Object.prototype.hasOwnProperty.call(exports, p)) __createBinding(exports, m, p);
+};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var TrtcCloudImpl_1 = __importDefault(require("./TrtcCloudImpl"));
 var TrtcDefines_1 = require("./TrtcDefines");
-var version = '1.0.6';
+var version = '1.0.7';
+__exportStar(require("./TrtcDefines"), exports);
+__exportStar(require("./TrtcCode"), exports);
 /**
  * TrtcCloud
  *
@@ -162,6 +178,7 @@ var TrtcCloud = /** @class */ (function () {
      * @memberof TrtcCloud
      * @example
      * // 预览本地画面
+     * const viewId = this.userId;
      * this.trtcCloud.startLocalPreview(true, viewId);
      */
     TrtcCloud.prototype.startLocalPreview = function (isFrontCamera, viewId) {
@@ -241,6 +258,7 @@ var TrtcCloud = /** @class */ (function () {
      * @memberof TrtcCloud
      * @example
      * import { TRTCVideoStreamType } from '@/TrtcCloud/lib/TrtcDefines';
+     * const viewId = this.remoteUserId;
      * this.trtcCloud.startRemoteView(userId, TRTCVideoStreamType.TRTCVideoStreamTypeBig, viewId);
      */
     TrtcCloud.prototype.startRemoteView = function (userId, streamType, viewId) {
@@ -355,11 +373,11 @@ var TrtcCloud = /** @class */ (function () {
      * 设置“音频路由”，即设置声音是从手机的扬声器还是从听筒中播放出来，因此该接口仅适用于手机等移动端设备。 手机有两个扬声器：一个是位于手机顶部的听筒，一个是位于手机底部的立体声扬声器。
      * 设置音频路由为听筒时，声音比较小，只有将耳朵凑近才能听清楚，隐私性较好，适合用于接听电话。 设置音频路由为扬声器时，声音比较大，不用将手机贴脸也能听清，因此可以实现“免提”的功能。
      *
-     * @param {TRTCCloudDef} route 音频路由，即声音由哪里输出（扬声器、听筒）, 默认值：TRTCCloudDef.TRTC_AUDIO_ROUTE_SPEAKER（扬声器）
+     * @param {TRTCAudioRoute} route 音频路由，即声音由哪里输出（扬声器、听筒）, 默认值：TRTCAudioRoute.TRTCAudioRouteSpeaker（扬声器）
      * @memberof TrtcCloud
      * @example
-     * import { TRTCCloudDef } from '@/TrtcCloud/lib/TrtcDefines';
-     * this.trtcCloud.setAudioRoute(TRTCCloudDef.TRTC_AUDIO_ROUTE_SPEAKER);
+     * import { TRTCAudioRoute } from '@/TrtcCloud/lib/TrtcDefines';
+     * this.trtcCloud.setAudioRoute(TRTCAudioRoute.TRTCAudioRouteSpeaker);
      */
     TrtcCloud.prototype.setAudioRoute = function (route) {
         return TrtcCloudImpl_1.default._getInstance().setAudioRoute(route);
@@ -450,13 +468,13 @@ var TrtcCloud = /** @class */ (function () {
      * **Note:**
      * - 设置美颜前，先调用 `setBeautyLevel` 设置美颜级别。否则美颜级别为 0 表示关闭美颜
      *
-     * @param {TXBeautyStyle} beautyStyle 美颜风格，TXBeautyStyleSmooth：光滑；TXBeautyStyleNature：自然；TXBeautyStylePitu：优图
+     * @param {TRTCBeautyStyle} beautyStyle 美颜风格，TRTCBeautyStyleSmooth：光滑；TRTCBeautyStyleNature：自然；TRTCBeautyStylePitu：优图
      * @memberof TrtcCloud
      * @example
-     * import { TXBeautyStyle } from '@/TrtcCloud/lib/TrtcDefines';
+     * import { TRTCBeautyStyle } from '@/TrtcCloud/lib/TrtcDefines';
      * const beautyLevel = 5; // 美颜级别，取值范围0 - 9； 0表示关闭，9表示效果最明显。
      * this.trtcCloud.setBeautyLevel(beautyLevel);
-     * this.trtcCloud.setBeautyStyle(TXBeautyStyle.TXBeautyStyleSmooth);
+     * this.trtcCloud.setBeautyStyle(TRTCBeautyStyle.TRTCBeautyStyleSmooth);
      */
     TrtcCloud.prototype.setBeautyStyle = function (beautyStyle) {
         return TrtcCloudImpl_1.default._getInstance().setBeautyStyle(beautyStyle);
@@ -503,8 +521,7 @@ var TrtcCloud = /** @class */ (function () {
     //
     /////////////////////////////////////////////////////////////////////////////////
     /**
-     * 错误回调，表示 SDK 不可恢复的错误，一定要监听并分情况给用户适当的界面提示
-     *
+     * 错误回调，表示 SDK 不可恢复的错误，一定要监听并分情况给用户适当的界面提示<br>
      * @event TRTCCallback#onError
      * @param {Number} code 错误码，[详见](https://cloud.tencent.com/document/product/647/38308#.E9.94.99.E8.AF.AF.E7.A0.81.E8.A1.A8)
      * @param {String} message 错误信息
@@ -512,8 +529,7 @@ var TrtcCloud = /** @class */ (function () {
      */
     TrtcCloud.prototype.onError = function (code, message, extraInfo) { };
     /**
-     * 警告回调，用于告知您一些非严重性问题，例如出现卡顿或者可恢复的解码失败
-     *
+     * 警告回调，用于告知您一些非严重性问题，例如出现卡顿或者可恢复的解码失败<br>
      * @event TRTCCallback#onWarning
      * @param {Number} code 警告码，[详见](https://cloud.tencent.com/document/product/647/38308#.E8.AD.A6.E5.91.8A.E7.A0.81.E8.A1.A8)
      * @param {String} message 警告信息
@@ -542,8 +558,7 @@ var TrtcCloud = /** @class */ (function () {
      */
     TrtcCloud.prototype.onExitRoom = function (reason) { };
     /**
-     * 切换角色的事件回调
-     *
+     * 切换角色的事件回调<br>
      * 调用 TRTCCloud 中的 switchRole() 接口会切换主播和观众的角色，该操作会伴随一个线路切换的过程， 待 SDK 切换完成后，会抛出 onSwitchRole() 事件回调
      *
      * @event TRTCCallback#onSwitchRole
@@ -573,8 +588,7 @@ var TrtcCloud = /** @class */ (function () {
      */
     TrtcCloud.prototype.onFirstAudioFrame = function (userId) { };
     /**
-     * 截图完成时回调
-     *
+     * 截图完成时回调<br>
      * @event TRTCCallback#onSnapshotComplete
      * @param {String} base64Data 截图对应的 base64 数据
      * @param {String} message 错误信息
@@ -582,12 +596,10 @@ var TrtcCloud = /** @class */ (function () {
     TrtcCloud.prototype.onSnapshotComplete = function (base64Data, message) { };
     /**
      * 麦克风准备就绪
-     *
      */
     TrtcCloud.prototype.onMicDidReady = function () { };
     /**
      * 摄像头准备就绪
-     *
      */
     TrtcCloud.prototype.onCameraDidReady = function () { };
     /**
@@ -646,7 +658,6 @@ var TrtcCloud = /** @class */ (function () {
     TrtcCloud.prototype.onStatistics = function (statics) { };
     /**
      * 远端用户是否存在可播放的音频数据<br>
-     *
      * @event TRTCCallback#onUserAudioAvailable
      * @param {String} userId 用户标识 ID
      * @param {Boolean} available 声音是否开启
@@ -675,28 +686,35 @@ var TrtcCloud = /** @class */ (function () {
      */
     TrtcCloud.prototype.onUserVoiceVolume = function (userVolumes, totalVolume) { };
     /**
-     * 屏幕分享开启的事件回调
-     *
+     * 屏幕分享开启的事件回调<br>
      * 当您通过 startScreenCapture 等相关接口启动屏幕分享时，SDK 便会抛出此事件回调
      * @event TRTCCallback#onScreenCaptureStarted
      */
     TrtcCloud.prototype.onScreenCaptureStarted = function () { };
     /**
-     * 屏幕分享停止的事件回调
-     *
+     * 屏幕分享停止的事件回调<br>
      * 当您通过 stopScreenCapture 停止屏幕分享时，SDK 便会抛出此事件回调
      * @event TRTCCallback#onScreenCapturePaused
      * @param {Number} reason 停止原因，0：用户主动停止；1：屏幕窗口关闭导致停止；2：表示屏幕分享的显示屏状态变更（如接口被拔出、投影模式变更等）
      */
     TrtcCloud.prototype.onScreenCapturePaused = function (reason) { };
     /**
-     * 屏幕分享恢复的事件回调
+     * 屏幕分享恢复的事件回调<br>
      * 当您通过 resumeScreenCapture 恢复屏幕分享时，SDK 便会抛出此事件回调
      * @event TRTCCallback#onScreenCaptureResumed
      */
     TrtcCloud.prototype.onScreenCaptureResumed = function () { };
     /**
-     * 屏幕分享停止的事件回调
+     * 某远端用户发布/取消了辅路视频画面<br>
+     * “辅路画面”一般被用于承载屏幕分享的画面。当您收到 onUserSubStreamAvailable(userId, true) 通知时，表示该路画面已经有可播放的视频帧到达。 此时，您需要调用 startRemoteView 接口订阅该用户的远程画面，订阅成功后，您会继续收到该用户的首帧画面渲染回调 onFirstVideoFrame(userId)
+     *
+     * **Note:**
+     * - 拉取 Web 端（用 [WebRTC](https://web.sdk.qcloud.com/trtc/webrtc/doc/zh-cn/index.html) 实现屏幕分享）的屏幕分享，收不到 onUserSubStreamAvailable 事件。因为 [WebRTC](https://web.sdk.qcloud.com/trtc/webrtc/doc/zh-cn/index.html) 推的屏幕分享也是主流
+     * @event TRTCCallback#onUserSubStreamAvailable
+     */
+    TrtcCloud.prototype.onUserSubStreamAvailable = function (userId, available) { };
+    /**
+     * 屏幕分享停止的事件回调<br>
      * 当您通过 stopScreenCapture 停止屏幕分享时，SDK 便会抛出此事件回调
      * @event TRTCCallback#onScreenCaptureStopped
      * @param {Number} reason 停止原因，0：用户主动停止；1：屏幕窗口关闭导致停止；2：表示屏幕分享的显示屏状态变更（如接口被拔出、投影模式变更等）

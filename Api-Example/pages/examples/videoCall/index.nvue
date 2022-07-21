@@ -37,7 +37,7 @@
 <script>
 	import permision from "@/TrtcCloud/permission.js";
 	import TrtcCloud from '@/TrtcCloud/lib/index';
-	import { TRTCAppScene, TRTCVideoStreamType, TRTCCloudDef, TXBeautyStyle } from '@/TrtcCloud/lib/TrtcDefines';
+	import { TRTCAppScene, TRTCVideoStreamType, TRTCAudioRoute, TRTCBeautyStyle } from '@/TrtcCloud/lib/TrtcDefines';
 	import { genTestUserSig } from '@/debug/GenerateTestUserSig';
 	import TrtcLocalView from '@/TrtcCloud/view/TrtcLocalView';
 	import TrtcRemoteView from '@/TrtcCloud/view/TrtcRemoteView';
@@ -61,9 +61,9 @@
 				streamType: TRTCVideoStreamType.TRTCVideoStreamTypeBig,
 				remoteUserId: '',
 				beautySettings: [
-					{ value: TXBeautyStyle.TXBeautyStyleSmooth, name: '光滑' },
-					{ value: TXBeautyStyle.TXBeautyStyleNature, name: '自然' },
-					{ value: TXBeautyStyle.TXBeautyStylePitu, name: '优图' },
+					{ value: TRTCBeautyStyle.TRTCBeautyStyleSmooth, name: '光滑' },
+					{ value: TRTCBeautyStyle.TRTCBeautyStyleNature, name: '自然' },
+					{ value: TRTCBeautyStyle.TRTCBeautyStylePitu, name: '优图' },
 				],
 			}
 		},
