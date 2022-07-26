@@ -21,7 +21,6 @@ var TrtcCloudImpl_1 = __importDefault(require("./TrtcCloudImpl"));
 var TrtcDefines_1 = require("./TrtcDefines");
 var version = '1.0.7';
 __exportStar(require("./TrtcDefines"), exports);
-__exportStar(require("./TrtcCode"), exports);
 /**
  * TrtcCloud
  *
