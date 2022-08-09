@@ -52,7 +52,7 @@
 				userSig: '',
 				roomId: Math.floor(Math.random() * 100000),
 				userId: 'user_' + Math.floor(Math.random() * 100000).toString(),
-				appScene: TRTCAppScene.TRTCAppSceneVideoCall, // TRTCAppSceneVideoCall
+				appScene: TRTCAppScene.TRTCAppSceneLIVE,
 				isFrontCamera: true,
 				streamType: TRTCVideoStreamType.TRTCVideoStreamTypeBig,
 				remoteUserIdList: [],
@@ -117,7 +117,6 @@
 				});
 				this.trtcCloud = TrtcCloud.createInstance();
 				this.handleEvents();
-				this.sdkAppId && uni.$createTrtcCloudUpload(this.sdkAppId);
 			},
 			enterRoom() {
 				try {
@@ -125,17 +124,15 @@
           this.createTrtcCloud();
           // 【2】进房
 					const { roomId, userId, sdkAppId, appScene, userSig } = this;
-					let param = { roomId: +roomId, userId, sdkAppId, userSig, scene: TRTCAppScene.TRTCAppSceneLIVE };
+					let param = { roomId: +roomId, userId, sdkAppId, userSig };
 					this.trtcCloud.enterRoom(param, appScene);
 					uni.showToast({
 						title: 'enterRoom ',
 						icon: 'none',
 					});
-					this.sdkAppId && uni.$enterRoomSuccessUpload(this.sdkAppId);
           this.startLocalAudio();
 				} catch (error) {
 					console.log(`enterRoom error = ${JSON.stringify(error)}`);
-					this.sdkAppId && uni.$enterRoomFailedUpload(this.sdkAppId, JSON.stringify(error));
 				}
 			},
 			exitRoom() {
@@ -156,7 +153,6 @@
 					title: 'localPreview',
 					icon: 'none',
 				});
-				this.sdkAppId && uni.$startLocalPreviewUpload(this.sdkAppId);
 			},
 			stopLocalPreview() {
 				this.trtcCloud.stopLocalPreview();
@@ -189,7 +185,6 @@
 						title: `error: ${JSON.stringify(res)}`,
 						icon: 'none',
 					});
-					this.sdkAppId && uni.$onErrorUpload(this.sdkAppId, JSON.stringify(res));
 				});
 				this.trtcCloud.on('onEnterRoom', (result) => {
 					console.log(`- onEnterRoom = ${result}`);

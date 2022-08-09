@@ -10,6 +10,29 @@ var __assign = (this && this.__assign) || function () {
     };
     return __assign.apply(this, arguments);
 };
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -47,8 +70,9 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+var constants_1 = require("./constants");
 var TrtcDefines_1 = require("./TrtcDefines");
-// eslint-disable-next-line no-undef
+var TrtcCode_1 = __importStar(require("./TrtcCode"));
 var TrtcNativeTrtcCloudModule = uni.requireNativePlugin('TRTCCloudUniPlugin-TRTCCloudImpl');
 var TrtcEvent = uni.requireNativePlugin('globalEvent');
 var trtcCloud = null; // trtcCloud 单例
@@ -66,14 +90,17 @@ var TrtcCloudImpl = /** @class */ (function () {
             return trtcCloud;
         }
         catch (error) {
-            console.log("- impl _createInstance error = ".concat(error));
+            throw (0, TrtcCode_1.generateError_)(error);
         }
     };
     TrtcCloudImpl._getInstance = function () {
         if (trtcCloud) {
             return trtcCloud;
         }
-        throw new Error('get trtcCloud failed, please create trtcCloud first');
+        throw new TrtcCode_1.default({
+            code: TrtcCode_1.TXLiteJSError.INVALID_OPERATION,
+            message: 'get trtcCloud failed, please create trtcCloud first',
+        });
     };
     TrtcCloudImpl._destroyInstance = function () {
         try {
@@ -81,6 +108,11 @@ var TrtcCloudImpl = /** @class */ (function () {
             TrtcNativeTrtcCloudModule.destroySharedInstance();
         }
         catch (error) {
+            throw new TrtcCode_1.default({
+                code: error.code || TrtcCode_1.TXLiteJSError.UNKNOWN,
+                message: error.message,
+                name: error.name
+            });
         }
     };
     // 截图保存
@@ -115,10 +147,11 @@ var TrtcCloudImpl = /** @class */ (function () {
     // }
     TrtcCloudImpl.prototype.on = function (event, callback) {
         var _this = this;
-        // if (this.listenersMap_.has(event)) {
-        // 	return;
-        // }
-        if (typeof event !== 'string') {
+        if (typeof event !== constants_1.NAME.STRING || typeof callback !== constants_1.NAME.FUNCTION) {
+            throw new TrtcCode_1.default({
+                code: TrtcCode_1.TXLiteJSError.INVALID_PARAMETER,
+                message: "".concat(constants_1.NAME.LOG_PREFIX, " please check the on method parameter types. event type is a ").concat(typeof event, "; callback type is a ").concat(typeof callback),
+            });
         }
         var nativeListener = function (res) { return __awaiter(_this, void 0, void 0, function () {
             var _a, data, code, message, extraInfo, result, reason, userId, streamType, width, height, userId, localQuality, remoteQuality, userId, userId, reason, streamType, statics, userId, available, userId, available, userVolumes, totalVolume, userId, available;
@@ -242,7 +275,7 @@ var TrtcCloudImpl = /** @class */ (function () {
                         break;
                     }
                     default: {
-                        callback({ code: code, message: message, extraInfo: extraInfo });
+                        callback((0, TrtcCode_1.generateError_)({ message: message }, code, extraInfo));
                     }
                 }
                 return [2 /*return*/];
@@ -252,6 +285,12 @@ var TrtcCloudImpl = /** @class */ (function () {
         TrtcEvent.addEventListener(event, nativeListener);
     };
     TrtcCloudImpl.prototype.off = function (event) {
+        if (typeof event !== constants_1.NAME.STRING) {
+            throw new TrtcCode_1.default({
+                code: TrtcCode_1.TXLiteJSError.INVALID_PARAMETER,
+                message: "".concat(constants_1.NAME.LOG_PREFIX, " please check the off method parameter types. event type is a ").concat(typeof event, " not a ").concat(constants_1.NAME.STRING),
+            });
+        }
         try {
             if (event === '*') {
                 this.listenersMap_.forEach(function (value, key) {
@@ -265,40 +304,61 @@ var TrtcCloudImpl = /** @class */ (function () {
             }
         }
         catch (error) {
-            console.log('off error ', error);
+            throw (0, TrtcCode_1.generateError_)(error);
         }
     };
     TrtcCloudImpl.prototype.enterRoom = function (params, scene) {
+        if (scene !== TrtcDefines_1.TRTCAppScene.TRTCAppSceneVideoCall && scene !== TrtcDefines_1.TRTCAppScene.TRTCAppSceneLIVE && scene !== TrtcDefines_1.TRTCAppScene.TRTCAppSceneAudioCall && scene !== TrtcDefines_1.TRTCAppScene.TRTCAppSceneVoiceChatRoom) {
+            throw new TrtcCode_1.default({
+                code: TrtcCode_1.TXLiteJSError.INVALID_PARAMETER,
+                message: "".concat(constants_1.NAME.LOG_PREFIX, " please check the enterRoom method parameters. scene is not of TRTCAppScene"),
+            });
+        }
         try {
             var enterRoomParams = __assign(__assign({}, params), { role: params.role || TrtcDefines_1.TRTCRoleType.TRTCRoleAnchor, appScene: scene });
             TrtcNativeTrtcCloudModule.enterRoom(enterRoomParams);
         }
         catch (error) {
-            console.log("- impl enterRoom error = ".concat(error));
+            throw (0, TrtcCode_1.generateError_)(error);
         }
     };
     TrtcCloudImpl.prototype.exitRoom = function () {
-        TrtcNativeTrtcCloudModule.exitRoom();
+        try {
+            TrtcNativeTrtcCloudModule.exitRoom();
+        }
+        catch (error) {
+            throw (0, TrtcCode_1.generateError_)(error);
+        }
     };
     TrtcCloudImpl.prototype.switchRole = function (role) {
+        if (role !== TrtcDefines_1.TRTCRoleType.TRTCRoleAnchor && role !== TrtcDefines_1.TRTCRoleType.TRTCRoleAudience) {
+            throw new TrtcCode_1.default({
+                code: TrtcCode_1.TXLiteJSError.INVALID_PARAMETER,
+                message: "".concat(constants_1.NAME.LOG_PREFIX, " please check the switchRole method parameter. role is not of TRTCRoleType"),
+            });
+        }
         try {
-            if (role !== TrtcDefines_1.TRTCRoleType.TRTCRoleAnchor && role !== TrtcDefines_1.TRTCRoleType.TRTCRoleAudience) {
-                return;
-            }
             role && TrtcNativeTrtcCloudModule.switchRole(role);
         }
         catch (error) {
+            throw (0, TrtcCode_1.generateError_)(error);
         }
     };
     TrtcCloudImpl.prototype.startLocalPreview = function (isFrontCamera, viewId) {
         if (isFrontCamera === void 0) { isFrontCamera = true; }
+        if (typeof isFrontCamera !== constants_1.NAME.BOOLEAN || !viewId || typeof viewId !== constants_1.NAME.STRING) {
+            throw new TrtcCode_1.default({
+                code: TrtcCode_1.TXLiteJSError.INVALID_PARAMETER,
+                message: "".concat(constants_1.NAME.LOG_PREFIX, " please check the startLocalPreview method parameters"),
+            });
+        }
         try {
             var param = { isFrontCamera: !!isFrontCamera };
             param = viewId ? __assign(__assign({}, param), { userId: viewId }) : param;
             TrtcNativeTrtcCloudModule.startLocalPreview(param);
         }
         catch (error) {
-            console.log("- impl startLocalPreview error = ".concat(error));
+            throw (0, TrtcCode_1.generateError_)(error);
         }
     };
     TrtcCloudImpl.prototype.stopLocalPreview = function () {
@@ -306,22 +366,27 @@ var TrtcCloudImpl = /** @class */ (function () {
             TrtcNativeTrtcCloudModule.stopLocalPreview();
         }
         catch (error) {
+            throw (0, TrtcCode_1.generateError_)(error);
         }
     };
     TrtcCloudImpl.prototype.switchCamera = function (isFrontCamera) {
+        if (typeof isFrontCamera !== constants_1.NAME.BOOLEAN) {
+            throw new TrtcCode_1.default({
+                code: TrtcCode_1.TXLiteJSError.INVALID_PARAMETER,
+                message: "".concat(constants_1.NAME.LOG_PREFIX, " please check the switchCamera method parameter"),
+            });
+        }
         try {
-            if (typeof isFrontCamera !== 'boolean') {
-                return;
-            }
             TrtcNativeTrtcCloudModule.switchCamera(isFrontCamera);
         }
         catch (error) {
+            throw (0, TrtcCode_1.generateError_)(error);
         }
     };
     TrtcCloudImpl.prototype.setLocalRenderParams = function (params) {
         try {
             var platform = uni.getSystemInfoSync().platform;
-            if (platform === TrtcDefines_1.NAME.IOS) {
+            if (platform === constants_1.NAME.IOS) {
                 return;
             }
             var _a = params.rotation, rotation = _a === void 0 ? TrtcDefines_1.TRTCVideoRotation.TRTCVideoRotation_0 : _a, _b = params.fillMode, fillMode = _b === void 0 ? TrtcDefines_1.TRTCVideoFillMode.TRTCVideoFillMode_Fill : _b, _c = params.mirrorType, mirrorType = _c === void 0 ? TrtcDefines_1.TRTCVideoMirrorType.TRTCVideoMirrorType_Auto : _c;
@@ -332,49 +397,79 @@ var TrtcCloudImpl = /** @class */ (function () {
             });
         }
         catch (error) {
+            throw (0, TrtcCode_1.generateError_)(error);
         }
     };
     TrtcCloudImpl.prototype.muteLocalVideo = function (streamType, mute) {
+        if (streamType !== TrtcDefines_1.TRTCVideoStreamType.TRTCVideoStreamTypeBig && streamType !== TrtcDefines_1.TRTCVideoStreamType.TRTCVideoStreamTypeSub || typeof mute !== constants_1.NAME.BOOLEAN) {
+            throw new TrtcCode_1.default({
+                code: TrtcCode_1.TXLiteJSError.INVALID_PARAMETER,
+                message: "".concat(constants_1.NAME.LOG_PREFIX, " please check the muteLocalVideo method parameters"),
+            });
+        }
         try {
-            if ((streamType === TrtcDefines_1.TRTCVideoStreamType.TRTCVideoStreamTypeBig) || (streamType === TrtcDefines_1.TRTCVideoStreamType.TRTCVideoStreamTypeSub)) {
-                TrtcNativeTrtcCloudModule.muteLocalVideo({ streamType: streamType, mute: !!mute });
-            }
-            else {
-                // TODO: 抛出参数错误
-                console.error('impl-muteLocalVideo, streamType is not TRTCVideoStreamTypeBig or TRTCVideoStreamTypeSub!');
-            }
+            TrtcNativeTrtcCloudModule.muteLocalVideo({ streamType: streamType, mute: !!mute });
         }
         catch (error) {
+            throw (0, TrtcCode_1.generateError_)(error);
         }
     };
     TrtcCloudImpl.prototype.startRemoteView = function (userId, streamType, viewId) {
+        if (!userId || streamType !== TrtcDefines_1.TRTCVideoStreamType.TRTCVideoStreamTypeBig && streamType !== TrtcDefines_1.TRTCVideoStreamType.TRTCVideoStreamTypeSmall && streamType !== TrtcDefines_1.TRTCVideoStreamType.TRTCVideoStreamTypeSub || !viewId) {
+            throw new TrtcCode_1.default({
+                code: TrtcCode_1.TXLiteJSError.INVALID_PARAMETER,
+                message: "".concat(constants_1.NAME.LOG_PREFIX, " please check the startRemoteView method parameters"),
+            });
+        }
         try {
             TrtcNativeTrtcCloudModule.startRemoteView({ userId: userId, streamType: streamType, viewId: viewId });
         }
         catch (error) {
+            throw (0, TrtcCode_1.generateError_)(error);
         }
     };
     TrtcCloudImpl.prototype.stopRemoteView = function (userId, streamType) {
+        if (!userId || streamType !== TrtcDefines_1.TRTCVideoStreamType.TRTCVideoStreamTypeBig && streamType !== TrtcDefines_1.TRTCVideoStreamType.TRTCVideoStreamTypeSmall && streamType !== TrtcDefines_1.TRTCVideoStreamType.TRTCVideoStreamTypeSub) {
+            throw new TrtcCode_1.default({
+                code: TrtcCode_1.TXLiteJSError.INVALID_PARAMETER,
+                message: "".concat(constants_1.NAME.LOG_PREFIX, " please check the stopRemoteView method parameters"),
+            });
+        }
         try {
             TrtcNativeTrtcCloudModule.stopRemoteView({ userId: userId, streamType: streamType });
         }
         catch (error) {
+            throw (0, TrtcCode_1.generateError_)(error);
         }
     };
     // 截图
     TrtcCloudImpl.prototype.snapshotVideo = function (userId, streamType) {
+        if (streamType !== TrtcDefines_1.TRTCVideoStreamType.TRTCVideoStreamTypeBig && streamType !== TrtcDefines_1.TRTCVideoStreamType.TRTCVideoStreamTypeSub) {
+            throw new TrtcCode_1.default({
+                code: TrtcCode_1.TXLiteJSError.INVALID_PARAMETER,
+                message: "".concat(constants_1.NAME.LOG_PREFIX, " please check the snapshotVideo method parameters"),
+            });
+        }
         try {
             TrtcNativeTrtcCloudModule.snapshotVideo({ userId: userId || null, streamType: streamType });
         }
         catch (error) {
+            throw (0, TrtcCode_1.generateError_)(error);
         }
     };
     TrtcCloudImpl.prototype.startLocalAudio = function (quality) {
+        if (quality === void 0) { quality = TrtcDefines_1.TRTCAudioQuality.TRTCAudioQualityDefault; }
+        if (quality !== TrtcDefines_1.TRTCAudioQuality.TRTCAudioQualitySpeech && quality !== TrtcDefines_1.TRTCAudioQuality.TRTCAudioQualityDefault && quality !== TrtcDefines_1.TRTCAudioQuality.TRTCAudioQualityMusic) {
+            throw new TrtcCode_1.default({
+                code: TrtcCode_1.TXLiteJSError.INVALID_PARAMETER,
+                message: "".concat(constants_1.NAME.LOG_PREFIX, " please check the startLocalAudio method parameters"),
+            });
+        }
         try {
-            var qualityParam = quality || TrtcDefines_1.TRTCAudioQuality.TRTCAudioQualityDefault;
-            TrtcNativeTrtcCloudModule.startLocalAudio(qualityParam);
+            TrtcNativeTrtcCloudModule.startLocalAudio(quality);
         }
         catch (error) {
+            throw (0, TrtcCode_1.generateError_)(error);
         }
     };
     TrtcCloudImpl.prototype.stopLocalAudio = function () {
@@ -382,45 +477,77 @@ var TrtcCloudImpl = /** @class */ (function () {
             TrtcNativeTrtcCloudModule.stopLocalAudio();
         }
         catch (error) {
+            throw (0, TrtcCode_1.generateError_)(error);
         }
     };
     TrtcCloudImpl.prototype.muteLocalAudio = function (mute) {
+        if (typeof mute !== constants_1.NAME.BOOLEAN) {
+            throw new TrtcCode_1.default({
+                code: TrtcCode_1.TXLiteJSError.INVALID_PARAMETER,
+                message: "".concat(constants_1.NAME.LOG_PREFIX, " please check the muteLocalAudio method parameters, mute type is a ").concat(typeof mute, " not a ").concat(constants_1.NAME.BOOLEAN),
+            });
+        }
         try {
             TrtcNativeTrtcCloudModule.muteLocalAudio(!!mute);
         }
         catch (error) {
+            throw (0, TrtcCode_1.generateError_)(error);
         }
     };
     TrtcCloudImpl.prototype.muteRemoteAudio = function (userId, mute) {
+        if (typeof mute !== constants_1.NAME.BOOLEAN || !userId) {
+            throw new TrtcCode_1.default({
+                code: TrtcCode_1.TXLiteJSError.INVALID_PARAMETER,
+                message: "".concat(constants_1.NAME.LOG_PREFIX, " please check the muteRemoteAudio method parameters"),
+            });
+        }
         try {
-            if (userId) {
-                TrtcNativeTrtcCloudModule.muteRemoteAudio({ userId: userId, mute: !!mute });
-            }
+            TrtcNativeTrtcCloudModule.muteRemoteAudio({ userId: userId, mute: !!mute });
         }
         catch (error) {
+            throw (0, TrtcCode_1.generateError_)(error);
         }
     };
     TrtcCloudImpl.prototype.muteAllRemoteAudio = function (mute) {
+        if (typeof mute !== constants_1.NAME.BOOLEAN) {
+            throw new TrtcCode_1.default({
+                code: TrtcCode_1.TXLiteJSError.INVALID_PARAMETER,
+                message: "".concat(constants_1.NAME.LOG_PREFIX, " please check the muteAllRemoteAudio method parameters, mute type is a ").concat(typeof mute, " not a ").concat(constants_1.NAME.BOOLEAN),
+            });
+        }
         try {
             TrtcNativeTrtcCloudModule.muteAllRemoteAudio(!!mute);
         }
         catch (error) {
+            throw (0, TrtcCode_1.generateError_)(error);
         }
     };
     TrtcCloudImpl.prototype.setAudioRoute = function (route) {
+        if (route !== TrtcDefines_1.TRTCAudioRoute.TRTCAudioRouteSpeaker && route !== TrtcDefines_1.TRTCAudioRoute.TRTCAudioRouteEarpiece) {
+            throw new TrtcCode_1.default({
+                code: TrtcCode_1.TXLiteJSError.INVALID_PARAMETER,
+                message: "".concat(constants_1.NAME.LOG_PREFIX, " please check the setAudioRoute method parameter, route is not of TRTCAudioRoute"),
+            });
+        }
         try {
             TrtcNativeTrtcCloudModule.setAudioRoute(route);
         }
         catch (error) {
+            throw (0, TrtcCode_1.generateError_)(error);
         }
     };
     TrtcCloudImpl.prototype.enableAudioVolumeEvaluation = function (interval) {
+        if (typeof interval !== constants_1.NAME.NUMBER) {
+            throw new TrtcCode_1.default({
+                code: TrtcCode_1.TXLiteJSError.INVALID_PARAMETER,
+                message: "".concat(constants_1.NAME.LOG_PREFIX, " please check the enableAudioVolumeEvaluation method parameter, interval type is a ").concat(typeof interval, " not a ").concat(constants_1.NAME.NUMBER),
+            });
+        }
         try {
-            if (interval) {
-                TrtcNativeTrtcCloudModule.enableAudioVolumeEvaluation(interval);
-            }
+            interval > 0 && TrtcNativeTrtcCloudModule.enableAudioVolumeEvaluation(interval);
         }
         catch (error) {
+            throw (0, TrtcCode_1.generateError_)(error);
         }
     };
     /////////////////////////////////////////////////////////////////////////////////
@@ -429,17 +556,31 @@ var TrtcCloudImpl = /** @class */ (function () {
     //
     /////////////////////////////////////////////////////////////////////////////////
     TrtcCloudImpl.prototype.setBeautyStyle = function (beautyStyle) {
+        if (beautyStyle !== TrtcDefines_1.TRTCBeautyStyle.TRTCBeautyStyleSmooth && beautyStyle !== TrtcDefines_1.TRTCBeautyStyle.TRTCBeautyStyleNature && beautyStyle !== TrtcDefines_1.TRTCBeautyStyle.TRTCBeautyStylePitu) {
+            throw new TrtcCode_1.default({
+                code: TrtcCode_1.TXLiteJSError.INVALID_PARAMETER,
+                message: "".concat(constants_1.NAME.LOG_PREFIX, " please check the setBeautyStyle method parameter, beautyStyle is not of TRTCBeautyStyle"),
+            });
+        }
         try {
             TrtcNativeTrtcCloudModule.setBeautyStyle(beautyStyle);
         }
         catch (error) {
+            throw (0, TrtcCode_1.generateError_)(error);
         }
     };
     TrtcCloudImpl.prototype.setBeautyLevel = function (beautyLevel) {
+        if (typeof beautyLevel !== constants_1.NAME.NUMBER || (beautyLevel < 0 || beautyLevel > 9)) {
+            throw new TrtcCode_1.default({
+                code: TrtcCode_1.TXLiteJSError.INVALID_PARAMETER,
+                message: "".concat(constants_1.NAME.LOG_PREFIX, " please check the setBeautyLevel method parameter, beautyLevel should in the range 0-9"),
+            });
+        }
         try {
             TrtcNativeTrtcCloudModule.setBeautyLevel(beautyLevel);
         }
         catch (error) {
+            throw (0, TrtcCode_1.generateError_)(error);
         }
     };
     /////////////////////////////////////////////////////////////////////////////////
@@ -456,6 +597,7 @@ var TrtcCloudImpl = /** @class */ (function () {
             TrtcNativeTrtcCloudModule.setSubStreamEncoderParam(param);
         }
         catch (error) {
+            throw (0, TrtcCode_1.generateError_)(error);
         }
     };
     TrtcCloudImpl.prototype.startScreenCapture = function (streamType, encParams) {
@@ -471,10 +613,10 @@ var TrtcCloudImpl = /** @class */ (function () {
             //   return;
             // }
             var screenCaptureParams = __assign({ streamType: streamType }, encParams);
-            if (platform === TrtcDefines_1.NAME.ANDROID) {
+            if (platform === constants_1.NAME.ANDROID) {
                 TrtcNativeTrtcCloudModule.startScreenCapture(screenCaptureParams);
             }
-            if (platform === TrtcDefines_1.NAME.IOS) {
+            if (platform === constants_1.NAME.IOS) {
                 // 开始应用内的屏幕分享（仅支持 iOS 13.0 及以上系统）
                 TrtcNativeTrtcCloudModule.startScreenCaptureInApp(screenCaptureParams);
                 // if (shareSource === TRTCShareSource.InApp) {
@@ -487,6 +629,7 @@ var TrtcCloudImpl = /** @class */ (function () {
             }
         }
         catch (error) {
+            throw (0, TrtcCode_1.generateError_)(error);
         }
     };
     TrtcCloudImpl.prototype.stopScreenCapture = function () {
@@ -494,6 +637,7 @@ var TrtcCloudImpl = /** @class */ (function () {
             TrtcNativeTrtcCloudModule.stopScreenCapture();
         }
         catch (error) {
+            throw (0, TrtcCode_1.generateError_)(error);
         }
     };
     TrtcCloudImpl.prototype.pauseScreenCapture = function () {
@@ -501,6 +645,7 @@ var TrtcCloudImpl = /** @class */ (function () {
             TrtcNativeTrtcCloudModule.pauseScreenCapture();
         }
         catch (error) {
+            throw (0, TrtcCode_1.generateError_)(error);
         }
     };
     TrtcCloudImpl.prototype.resumeScreenCapture = function () {
@@ -508,6 +653,7 @@ var TrtcCloudImpl = /** @class */ (function () {
             TrtcNativeTrtcCloudModule.resumeScreenCapture();
         }
         catch (error) {
+            throw (0, TrtcCode_1.generateError_)(error);
         }
     };
     TrtcCloudImpl.prototype.setSubStreamEncoderParam = function (encParams) {
@@ -515,6 +661,7 @@ var TrtcCloudImpl = /** @class */ (function () {
             TrtcNativeTrtcCloudModule.setSubStreamEncoderParam(encParams);
         }
         catch (error) {
+            throw (0, TrtcCode_1.generateError_)(error);
         }
     };
     return TrtcCloudImpl;
