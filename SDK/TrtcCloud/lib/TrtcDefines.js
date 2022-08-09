@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.TRTCShareSource = exports.NAME = exports.TRTCAudioRoute = exports.TRTCRenderParams = exports.TRTCVideoEncParam = exports.TRTCParams = exports.TRTCAudioQuality = exports.TRTCRoleType = exports.TRTCAppScene = exports.TRTCBeautyStyle = exports.TRTCVideoMirrorType = exports.TRTCVideoRotation = exports.TRTCVideoFillMode = exports.TRTCVideoStreamType = exports.TRTCVideoResolutionMode = exports.TRTCVideoResolution = void 0;
+exports.TRTCShareSource = exports.TRTCAudioRoute = exports.TRTCRenderParams = exports.TRTCVideoEncParam = exports.TRTCParams = exports.TRTCAudioQuality = exports.TRTCRoleType = exports.TRTCAppScene = exports.TRTCBeautyStyle = exports.TRTCVideoMirrorType = exports.TRTCVideoRotation = exports.TRTCVideoFillMode = exports.TRTCVideoStreamType = exports.TRTCVideoResolutionMode = exports.TRTCVideoResolution = void 0;
 /**
  * TRTC 关键类型定义<br>
  * @description 分辨率、质量等级等枚举和常量值的定义
@@ -429,10 +429,6 @@ var TRTCAudioRoute;
 //                    【其它参数】
 //
 /////////////////////////////////////////////////////////////////////////////////
-exports.NAME = {
-    ANDROID: 'android',
-    IOS: 'ios',
-};
 var TRTCShareSource;
 (function (TRTCShareSource) {
     TRTCShareSource["InApp"] = "InApp";

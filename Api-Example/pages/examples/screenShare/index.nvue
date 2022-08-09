@@ -121,7 +121,6 @@
 				});
 				this.trtcCloud = TrtcCloud.createInstance();
 				this.handleEvents();
-				this.sdkAppId && uni.$createTrtcCloudUpload(this.sdkAppId);
 			},
 			enterRoom() {
 				try {
@@ -135,10 +134,8 @@
 						title: 'enterRoom ',
 						icon: 'none',
 					});
-					this.sdkAppId && uni.$enterRoomSuccessUpload(this.sdkAppId);
 				} catch (error) {
 					console.log(`enterRoom error = ${JSON.stringify(error)}`);
-					this.sdkAppId && uni.$enterRoomFailedUpload(this.sdkAppId, JSON.stringify(error));
 				}
 			},
 			exitRoom() {
@@ -159,7 +156,6 @@
 					title: 'localPreview',
 					icon: 'none',
 				});
-				this.sdkAppId && uni.$startLocalPreviewUpload(this.sdkAppId);
 			},
 			stopLocalPreview() {
 				this.trtcCloud.stopLocalPreview();
@@ -208,7 +204,6 @@
 						title: `error: ${JSON.stringify(res)}`,
 						icon: 'none',
 					});
-					this.sdkAppId && uni.$onErrorUpload(this.sdkAppId, JSON.stringify(res));
 				});
 				this.trtcCloud.on('onEnterRoom', (result) => {
 					console.log(`- onEnterRoom = ${result}`);

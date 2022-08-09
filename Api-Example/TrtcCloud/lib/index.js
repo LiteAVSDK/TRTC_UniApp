@@ -19,7 +19,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var TrtcCloudImpl_1 = __importDefault(require("./TrtcCloudImpl"));
 var TrtcDefines_1 = require("./TrtcDefines");
-var version = '1.0.7';
+var version = '1.0.8';
 __exportStar(require("./TrtcDefines"), exports);
 /**
  * TrtcCloud
@@ -455,6 +455,33 @@ var TrtcCloud = /** @class */ (function () {
         if (encParams === void 0) { encParams = null; }
         return TrtcCloudImpl_1.default._getInstance().startScreenCapture(streamType, encParams);
     };
+    /**
+     * 停止屏幕分享
+     * @memberof TrtcCloud
+     * @example
+     * this.trtcCloud.stopScreenCapture();
+     */
+    TrtcCloud.prototype.stopScreenCapture = function () {
+        return TrtcCloudImpl_1.default._getInstance().stopScreenCapture();
+    };
+    /**
+     * 暂停屏幕分享
+     * @memberof TrtcCloud
+     * @example
+     * this.trtcCloud.pauseScreenCapture();
+     */
+    TrtcCloud.prototype.pauseScreenCapture = function () {
+        return TrtcCloudImpl_1.default._getInstance().pauseScreenCapture();
+    };
+    /**
+     * 恢复屏幕分享
+     * @memberof TrtcCloud
+     * @example
+     * this.trtcCloud.resumeScreenCapture();
+     */
+    TrtcCloud.prototype.resumeScreenCapture = function () {
+        return TrtcCloudImpl_1.default._getInstance().resumeScreenCapture();
+    };
     /////////////////////////////////////////////////////////////////////////////////
     //
     //                      美颜 + 水印
@@ -693,6 +720,13 @@ var TrtcCloud = /** @class */ (function () {
     /**
      * 屏幕分享停止的事件回调<br>
      * 当您通过 stopScreenCapture 停止屏幕分享时，SDK 便会抛出此事件回调
+     * @event TRTCCallback#onScreenCaptureStopped
+     * @param {Number} reason 停止原因，0：用户主动停止；1：屏幕窗口关闭导致停止；2：表示屏幕分享的显示屏状态变更（如接口被拔出、投影模式变更等）
+     */
+    TrtcCloud.prototype.onScreenCaptureStopped = function (reason) { };
+    /**
+     * 屏幕分享停止的事件回调<br>
+     * 当您通过 pauseScreenCapture 停止屏幕分享时，SDK 便会抛出此事件回调
      * @event TRTCCallback#onScreenCapturePaused
      * @param {Number} reason 停止原因，0：用户主动停止；1：屏幕窗口关闭导致停止；2：表示屏幕分享的显示屏状态变更（如接口被拔出、投影模式变更等）
      */
@@ -712,13 +746,6 @@ var TrtcCloud = /** @class */ (function () {
      * @event TRTCCallback#onUserSubStreamAvailable
      */
     TrtcCloud.prototype.onUserSubStreamAvailable = function (userId, available) { };
-    /**
-     * 屏幕分享停止的事件回调<br>
-     * 当您通过 stopScreenCapture 停止屏幕分享时，SDK 便会抛出此事件回调
-     * @event TRTCCallback#onScreenCaptureStopped
-     * @param {Number} reason 停止原因，0：用户主动停止；1：屏幕窗口关闭导致停止；2：表示屏幕分享的显示屏状态变更（如接口被拔出、投影模式变更等）
-     */
-    TrtcCloud.prototype.onScreenCaptureStopped = function (reason) { };
     return TrtcCloud;
 }());
 exports.default = TrtcCloud;
