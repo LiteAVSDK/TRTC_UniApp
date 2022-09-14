@@ -274,8 +274,11 @@ var TrtcCloudImpl = /** @class */ (function () {
                         callback({ base64Data: code, message: message });
                         break;
                     }
-                    default: {
+                    case 'onError': {
                         callback((0, TrtcCode_1.generateError_)({ message: message }, code, extraInfo));
+                    }
+                    default: {
+                        callback({ code: code, message: message, extraInfo: extraInfo });
                     }
                 }
                 return [2 /*return*/];
