@@ -1,9 +1,9 @@
 <template>
 	<div class="trtc-container">
 		<view class="trtc-video-area">
-			<view class="trtc-video-view" id='root'>
-				<trtc-local-view :viewId="userId" style="height: 403.84rpx;flex: 1;"></trtc-local-view>
-			</view>
+			<trtc-local-view :viewId="userId" style="height: 403.84rpx;flex: 1;"></trtc-local-view>
+		</view>
+		<view class="trtc-video-area">
 			<view class="trtc-video-view">
 				<trtc-remote-view v-if="remoteUserId" :userId="remoteUserId" :viewId="remoteUserId" style="height: 403.84rpx;flex: 1">
 				</trtc-remote-view>
@@ -26,7 +26,7 @@
 		<view class="trtc-line"></view>
 		<button class="trtc-btn-long" style="margin-top: 20rpx;" type="primary" @click="enterRoom">Enter Room</button>
     <button class="trtc-btn-long" style="margin-top: 20rpx;" type="primary" @click="startLocalPreview">Start Local Preview</button>
-		<radio-group class="radio-group-container" @change="videoRotate">
+		<radio-group class="radio-group-container" @change="videoRotate" id="render-rotate">
 			<view class="item-container" v-for="(item, index) in TRTCVideoRotationSettings"><radio :value="item.value" />{{item.name}}</view>
 		</radio-group>
 		<button class="trtc-btn-long" style="margin-top: 20rpx;" type="primary" @click="exitRoom">Exit Room</button>
@@ -37,7 +37,7 @@
 <script>
 	import permision from "@/TrtcCloud/permission.js";
 	import TrtcCloud from '@/TrtcCloud/lib/index';
-	import { TRTCAppScene, TRTCVideoStreamType, TRTCCloudDef, TRTCVideoRotation } from '@/TrtcCloud/lib/TrtcDefines';
+	import { TRTCAppScene, TRTCVideoStreamType, TRTCCloudDef, TRTCVideoRotation, TRTCVideoFillMode } from '@/TrtcCloud/lib/TrtcDefines';
 	import { genTestUserSig } from '@/debug/GenerateTestUserSig';
 	import TrtcLocalView from '@/TrtcCloud/view/TrtcLocalView';
 	import TrtcRemoteView from '@/TrtcCloud/view/TrtcRemoteView';
@@ -131,7 +131,9 @@
 				try {
           // 【1】创建实例
           this.createTrtcCloud();
-          // 【2】进房
+					// 【2】本地预览
+					this.startLocalPreview();
+          // 【3】进房
 					const { roomId, userId, sdkAppId, appScene, userSig } = this;
 					let param = { roomId: +roomId, userId, sdkAppId, userSig };
 					this.trtcCloud.enterRoom(param, appScene);
@@ -174,7 +176,11 @@
 			videoRotate(e) {
 				const { value } = e.detail;
 				console.log('旋转 = ', value);
-				this.trtcCloud.setLocalRenderParams({ rotation: value });
+				const renderParams = {
+					rotation: value,
+					fillMode: TRTCVideoFillMode.TRTCVideoFillMode_Fit,
+				};
+				this.trtcCloud.setRemoteRenderParams(this.remoteUserId, TRTCVideoStreamType.TRTCVideoStreamTypeBig, renderParams);
 			},
 			handleEvents() {
 				this.trtcCloud.on('onWarning', (res) => {

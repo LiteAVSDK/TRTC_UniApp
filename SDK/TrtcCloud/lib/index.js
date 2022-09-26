@@ -19,7 +19,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var TrtcCloudImpl_1 = __importDefault(require("./TrtcCloudImpl"));
 var TrtcDefines_1 = require("./TrtcDefines");
-var version = '1.0.8';
+var version = '1.0.9';
 __exportStar(require("./TrtcDefines"), exports);
 /**
  * TrtcCloud
@@ -209,10 +209,6 @@ var TrtcCloud = /** @class */ (function () {
     };
     /**
      * 设置本地画面的渲染参数，可设置的参数包括有：画面的旋转角度、填充模式以及左右镜像等。
-     *
-     * **Note:**
-     *  - **iOS 暂不支持该接口功能**
-     *
      * @param {TRTCRenderParams} params - 本地图像的参数
      * @param {TRTCVideoRotation} params.rotation - 图像的顺时针旋转角度，支持90、180以及270旋转角度，默认值：TRTCVideoRotation.TRTCVideoRotation_0
      * @param {TRTCVideoFillMode} params.fillMode - 视频画面填充模式，填充（画面可能会被拉伸裁剪）或适应（画面可能会有黑边），默认值：TRTCVideoFillMode.TRTCVideoFillMode_Fill
@@ -280,6 +276,25 @@ var TrtcCloud = /** @class */ (function () {
     TrtcCloud.prototype.stopRemoteView = function (userId, streamType) {
         return TrtcCloudImpl_1.default._getInstance().stopRemoteView(userId, streamType);
     };
+    /**
+     * 设置远端画面的渲染参数，可设置的参数包括有：画面的旋转角度、填充模式以及左右镜像等。
+     * @param {String} userId 远端用户 ID
+     * @param {TRTCVideoStreamType} streamType 可以设置为主路画面（TRTCVideoStreamTypeBig）或辅路画面（TRTCVideoStreamTypeSub）
+     * @param {TRTCRenderParams} params - 图像的参数
+     * @param {TRTCVideoRotation} params.rotation - 图像的顺时针旋转角度，支持90、180以及270旋转角度，默认值：TRTCVideoRotation.TRTCVideoRotation_0
+     * @param {TRTCVideoFillMode} params.fillMode - 视频画面填充模式，填充（画面可能会被拉伸裁剪）或适应（画面可能会有黑边），默认值：TRTCVideoFillMode.TRTCVideoFillMode_Fill
+     * @param {TRTCVideoMirrorType} params.mirrorType - 画面镜像模式，默认值：TRTCVideoMirrorType.TRTCVideoMirrorType_Auto
+     * @memberof TrtcCloud
+     * @example
+     * import { TRTCVideoRotation, TRTCVideoFillMode, TRTCVideoMirrorType } from '@/TrtcCloud/lib/TrtcDefines';
+     * const renderParams = {
+     *  rotation: TRTCVideoRotation.TRTCVideoRotation_0,
+     *  fillMode: TRTCVideoFillMode.TRTCVideoFillMode_Fill,
+     *  mirrorType: TRTCVideoMirrorType.TRTCVideoMirrorType_Auto
+     * };
+     * this.trtcCloud.setRemoteRenderParams(userId, TRTCVideoStreamType.TRTCVideoStreamTypeBig, renderParams);
+     */
+    TrtcCloud.prototype.setRemoteRenderParams = function (userId, streamType, params) { };
     /**
      * 视频画面截图
      *
