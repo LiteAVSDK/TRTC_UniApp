@@ -36,6 +36,10 @@
                 url: "/pages/examples/videoRenderSet/index",
               },
 							{
+							  name: "远端画面渲染设置",
+							  url: "/pages/examples/remoteVideoRenderSet/index",
+							},
+							{
 							  name: "音频",
 							  url: "/pages/examples/audioCall/index",
 							},

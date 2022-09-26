@@ -31,6 +31,12 @@
 			}
 		},
 		{
+			"path": "pages/examples/remoteVideoRenderSet/index",
+			"style": {
+				"navigationBarTitleText": "远端画面渲染设置"
+			}
+		},
+		{
 			"path": "pages/examples/audioCall/index",
 			"style": {
 				"navigationBarTitleText": "音频"

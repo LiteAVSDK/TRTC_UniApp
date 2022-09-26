@@ -388,10 +388,6 @@ var TrtcCloudImpl = /** @class */ (function () {
     };
     TrtcCloudImpl.prototype.setLocalRenderParams = function (params) {
         try {
-            var platform = uni.getSystemInfoSync().platform;
-            if (platform === constants_1.NAME.IOS) {
-                return;
-            }
             var _a = params.rotation, rotation = _a === void 0 ? TrtcDefines_1.TRTCVideoRotation.TRTCVideoRotation_0 : _a, _b = params.fillMode, fillMode = _b === void 0 ? TrtcDefines_1.TRTCVideoFillMode.TRTCVideoFillMode_Fill : _b, _c = params.mirrorType, mirrorType = _c === void 0 ? TrtcDefines_1.TRTCVideoMirrorType.TRTCVideoMirrorType_Auto : _c;
             TrtcNativeTrtcCloudModule.setLocalRenderParams({
                 rotation: rotation,
@@ -440,6 +436,28 @@ var TrtcCloudImpl = /** @class */ (function () {
         }
         try {
             TrtcNativeTrtcCloudModule.stopRemoteView({ userId: userId, streamType: streamType });
+        }
+        catch (error) {
+            throw (0, TrtcCode_1.generateError_)(error);
+        }
+    };
+    // 远端渲染设置
+    TrtcCloudImpl.prototype.setRemoteRenderParams = function (userId, streamType, params) {
+        try {
+            if (!userId || (streamType !== TrtcDefines_1.TRTCVideoStreamType.TRTCVideoStreamTypeBig && streamType !== TrtcDefines_1.TRTCVideoStreamType.TRTCVideoStreamTypeSub)) {
+                throw new TrtcCode_1.default({
+                    code: TrtcCode_1.TXLiteJSError.INVALID_PARAMETER,
+                    message: "".concat(constants_1.NAME.LOG_PREFIX, " please check the snapshotVideo method parameters"),
+                });
+            }
+            var _a = params.rotation, rotation = _a === void 0 ? TrtcDefines_1.TRTCVideoRotation.TRTCVideoRotation_0 : _a, _b = params.fillMode, fillMode = _b === void 0 ? TrtcDefines_1.TRTCVideoFillMode.TRTCVideoFillMode_Fill : _b, _c = params.mirrorType, mirrorType = _c === void 0 ? TrtcDefines_1.TRTCVideoMirrorType.TRTCVideoMirrorType_Auto : _c;
+            TrtcNativeTrtcCloudModule.setRemoteRenderParams({
+                userId: userId,
+                streamType: streamType,
+                rotation: rotation,
+                fillMode: fillMode,
+                mirrorType: mirrorType
+            });
         }
         catch (error) {
             throw (0, TrtcCode_1.generateError_)(error);
