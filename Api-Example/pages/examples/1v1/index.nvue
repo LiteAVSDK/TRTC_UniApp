@@ -63,7 +63,7 @@
 	import permision from "@/TrtcCloud/permission.js";
 	import TrtcCloud from '@/TrtcCloud/lib/index';
 	import { TRTCAppScene, TRTCVideoStreamType, TRTCAudioRoute, TRTCAudioQuality } from '@/TrtcCloud/lib/TrtcDefines';
-	import { genTestUserSig } from '@/debug/GenerateTestUserSig';
+	import genTestUserSig from '@/debug/GenerateTestUserSig';
 	import TrtcLocalView from '@/TrtcCloud/view/TrtcLocalView';
 	import TrtcRemoteView from '@/TrtcCloud/view/TrtcRemoteView';
 	const roomId = Math.floor(Math.random() * 100000).toString();

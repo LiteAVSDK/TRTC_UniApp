@@ -6,7 +6,6 @@
   "dependencies": {
     "aegis-weex-sdk": "^1.24.46"
   },
-  "devDependencies": {},
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },

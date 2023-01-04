@@ -39,6 +39,10 @@
 							  name: "远端画面渲染设置",
 							  url: "/pages/examples/remoteVideoRenderSet/index",
 							},
+              {
+							  name: "本地画面编码设置",
+							  url: "/pages/examples/videoEncodeSet/index",
+							},
 							{
 							  name: "音频",
 							  url: "/pages/examples/audioCall/index",
@@ -58,6 +62,10 @@
               {
                 name: "截屏",
                 url: "/pages/examples/snapShot/index",
+              },
+              {
+                name: "背景音效",
+                url: "/pages/examples/playMusic/index",
               }
             ]
           }

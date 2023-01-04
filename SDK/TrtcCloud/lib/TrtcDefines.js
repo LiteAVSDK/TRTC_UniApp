@@ -1,6 +1,3 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.TRTCShareSource = exports.TRTCAudioRoute = exports.TRTCRenderParams = exports.TRTCVideoEncParam = exports.TRTCParams = exports.TRTCAudioQuality = exports.TRTCRoleType = exports.TRTCAppScene = exports.TRTCBeautyStyle = exports.TRTCVideoMirrorType = exports.TRTCVideoRotation = exports.TRTCVideoFillMode = exports.TRTCVideoStreamType = exports.TRTCVideoResolutionMode = exports.TRTCVideoResolution = void 0;
 /**
  * TRTC 关键类型定义<br>
  * @description 分辨率、质量等级等枚举和常量值的定义
@@ -15,7 +12,7 @@ exports.TRTCShareSource = exports.TRTCAudioRoute = exports.TRTCRenderParams = ex
  * 此处仅定义横屏分辨率（如 640 × 360），如需使用竖屏分辨率（如 360 × 640），需要同时指定 VideoResolutionMode 为 Portrait
  * @enum {Number}
  */
-var TRTCVideoResolution_HACK_JSDOC = {
+const TRTCVideoResolution_HACK_JSDOC = {
     /** 宽高比 1:1；分辨率 120x120；建议码率（VideoCall）80kbps; 建议码率（LIVE）120kbps */
     TRTCVideoResolution_120_120: 1,
     /** 宽高比 1:1 分辨率 160x160；建议码率（VideoCall）100kbps; 建议码率（LIVE）150kbps */
@@ -57,7 +54,7 @@ var TRTCVideoResolution_HACK_JSDOC = {
     /** 宽高比 16:9；分辨率 1920x1080；建议码率（VideoCall）2000kbps; 建议码率（LIVE）3000kbps */
     TRTCVideoResolution_1920_1080: 114,
 };
-var TRTCVideoResolution;
+export var TRTCVideoResolution;
 (function (TRTCVideoResolution) {
     TRTCVideoResolution[TRTCVideoResolution["TRTCVideoResolution_120_120"] = 1] = "TRTCVideoResolution_120_120";
     TRTCVideoResolution[TRTCVideoResolution["TRTCVideoResolution_160_160"] = 3] = "TRTCVideoResolution_160_160";
@@ -79,23 +76,23 @@ var TRTCVideoResolution;
     TRTCVideoResolution[TRTCVideoResolution["TRTCVideoResolution_960_540"] = 110] = "TRTCVideoResolution_960_540";
     TRTCVideoResolution[TRTCVideoResolution["TRTCVideoResolution_1280_720"] = 112] = "TRTCVideoResolution_1280_720";
     TRTCVideoResolution[TRTCVideoResolution["TRTCVideoResolution_1920_1080"] = 114] = "TRTCVideoResolution_1920_1080";
-})(TRTCVideoResolution = exports.TRTCVideoResolution || (exports.TRTCVideoResolution = {}));
+})(TRTCVideoResolution || (TRTCVideoResolution = {}));
 /**
  * 视频分辨率模式<br>
  * TRTCVideoResolution 中仅定义了横屏分辨率（如 640 × 360），如需使用竖屏分辨率（如 360 × 640），需要同时指定 TRTCVideoResolutionMode 为 Portrait
  * @enum {Number}
  */
-var TRTCVideoResolutionMode_HACK_JSDOC = {
+const TRTCVideoResolutionMode_HACK_JSDOC = {
     /** 横屏分辨率 */
     TRTCVideoResolutionModeLandscape: 0,
     /** 竖屏分辨率 */
     TRTCVideoResolutionModePortrait: 1,
 };
-var TRTCVideoResolutionMode;
+export var TRTCVideoResolutionMode;
 (function (TRTCVideoResolutionMode) {
     TRTCVideoResolutionMode[TRTCVideoResolutionMode["TRTCVideoResolutionModeLandscape"] = 0] = "TRTCVideoResolutionModeLandscape";
     TRTCVideoResolutionMode[TRTCVideoResolutionMode["TRTCVideoResolutionModePortrait"] = 1] = "TRTCVideoResolutionModePortrait";
-})(TRTCVideoResolutionMode = exports.TRTCVideoResolutionMode || (exports.TRTCVideoResolutionMode = {}));
+})(TRTCVideoResolutionMode || (TRTCVideoResolutionMode = {}));
 ;
 /**
  * 视频流类型<br>
@@ -108,7 +105,7 @@ var TRTCVideoResolutionMode;
  * - 不支持单独开启低清小画面，小画面必须依附于大画面而存在，SDK 会自动设定低清小画面的分辨率和码率
  * @enum {Number}
  */
-var TRTCVideoStreamType_HACK_JSDOC = {
+const TRTCVideoStreamType_HACK_JSDOC = {
     /** 大画面视频流 */
     TRTCVideoStreamTypeBig: 0,
     /** 小画面视频流 */
@@ -116,12 +113,12 @@ var TRTCVideoStreamType_HACK_JSDOC = {
     /** 辅流（屏幕分享） */
     TRTCVideoStreamTypeSub: 2,
 };
-var TRTCVideoStreamType;
+export var TRTCVideoStreamType;
 (function (TRTCVideoStreamType) {
     TRTCVideoStreamType[TRTCVideoStreamType["TRTCVideoStreamTypeBig"] = 0] = "TRTCVideoStreamTypeBig";
     TRTCVideoStreamType[TRTCVideoStreamType["TRTCVideoStreamTypeSmall"] = 1] = "TRTCVideoStreamTypeSmall";
     TRTCVideoStreamType[TRTCVideoStreamType["TRTCVideoStreamTypeSub"] = 2] = "TRTCVideoStreamTypeSub";
-})(TRTCVideoStreamType = exports.TRTCVideoStreamType || (exports.TRTCVideoStreamType = {}));
+})(TRTCVideoStreamType || (TRTCVideoStreamType = {}));
 /**
  * 视频画面填充模式<br>
  * 如果画面的显示分辨率不等于画面的原始分辨率，就需要您设置画面的填充模式:
@@ -129,24 +126,24 @@ var TRTCVideoStreamType;
  * - TRTCVideoFillMode_Fit，图像长边填满屏幕，短边区域会被填充黑色，但画面的内容肯定是完整的。
  * @enum {Number}
  */
-var TRTCVideoFillMode_HACK_JSDOC = {
+const TRTCVideoFillMode_HACK_JSDOC = {
     /** 图像铺满屏幕，超出显示视窗的视频部分将被截掉 */
     TRTCVideoFillMode_Fill: 0,
     /** 图像长边填满屏幕，短边区域会被填充黑色 */
     TRTCVideoFillMode_Fit: 1,
 };
-var TRTCVideoFillMode;
+export var TRTCVideoFillMode;
 (function (TRTCVideoFillMode) {
     TRTCVideoFillMode[TRTCVideoFillMode["TRTCVideoFillMode_Fill"] = 0] = "TRTCVideoFillMode_Fill";
     TRTCVideoFillMode[TRTCVideoFillMode["TRTCVideoFillMode_Fit"] = 1] = "TRTCVideoFillMode_Fit";
-})(TRTCVideoFillMode = exports.TRTCVideoFillMode || (exports.TRTCVideoFillMode = {}));
+})(TRTCVideoFillMode || (TRTCVideoFillMode = {}));
 ;
 /**
  * 视频画面旋转方向<br>
  * TRTC SDK 提供了对本地和远程画面的旋转角度设置 API，如下的旋转角度都是指顺时针方向的。
  * @enum {Number}
  */
-var TRTCVideoRotation_HACK_JSDOC = {
+const TRTCVideoRotation_HACK_JSDOC = {
     /** 顺时针旋转0度 */
     TRTCVideoRotation_0: 0,
     /** 顺时针旋转90度 */
@@ -156,19 +153,19 @@ var TRTCVideoRotation_HACK_JSDOC = {
     /** 顺时针旋转270度 */
     TRTCVideoRotation_270: 3,
 };
-var TRTCVideoRotation;
+export var TRTCVideoRotation;
 (function (TRTCVideoRotation) {
     TRTCVideoRotation[TRTCVideoRotation["TRTCVideoRotation_0"] = 0] = "TRTCVideoRotation_0";
     TRTCVideoRotation[TRTCVideoRotation["TRTCVideoRotation_90"] = 1] = "TRTCVideoRotation_90";
     TRTCVideoRotation[TRTCVideoRotation["TRTCVideoRotation_180"] = 2] = "TRTCVideoRotation_180";
     TRTCVideoRotation[TRTCVideoRotation["TRTCVideoRotation_270"] = 3] = "TRTCVideoRotation_270";
-})(TRTCVideoRotation = exports.TRTCVideoRotation || (exports.TRTCVideoRotation = {}));
+})(TRTCVideoRotation || (TRTCVideoRotation = {}));
 /**
  * 画面渲染镜像类型<br>
  * TRTC 的画面镜像提供下列设置模式
  * @enum {Number}
  */
-var TRTCVideoMirrorType_HACK_JSDOC = {
+const TRTCVideoMirrorType_HACK_JSDOC = {
     /** 只适用于移动端， 本地预览时，前置摄像头镜像，后置摄像头不镜像 */
     TRTCVideoMirrorType_Auto: 0,
     /** 所有画面均镜像 */
@@ -176,18 +173,18 @@ var TRTCVideoMirrorType_HACK_JSDOC = {
     /** 所有画面均不镜像 */
     TRTCVideoMirrorType_Disable: 2
 };
-var TRTCVideoMirrorType;
+export var TRTCVideoMirrorType;
 (function (TRTCVideoMirrorType) {
     TRTCVideoMirrorType[TRTCVideoMirrorType["TRTCVideoMirrorType_Auto"] = 0] = "TRTCVideoMirrorType_Auto";
     TRTCVideoMirrorType[TRTCVideoMirrorType["TRTCVideoMirrorType_Enable"] = 1] = "TRTCVideoMirrorType_Enable";
     TRTCVideoMirrorType[TRTCVideoMirrorType["TRTCVideoMirrorType_Disable"] = 2] = "TRTCVideoMirrorType_Disable";
-})(TRTCVideoMirrorType = exports.TRTCVideoMirrorType || (exports.TRTCVideoMirrorType = {}));
+})(TRTCVideoMirrorType || (TRTCVideoMirrorType = {}));
 /**
  * 美颜（磨皮）算法<br>
  * TRTC SDK 内置了多种不同的磨皮算法，您可以选择最适合您产品定位的方案。
  * @enum {Number}
  */
-var TRTCBeautyStyle_HACK_JSDOC = {
+const TRTCBeautyStyle_HACK_JSDOC = {
     /** 光滑，算法比较激进，磨皮效果比较明显，适用于秀场直播 */
     TRTCBeautyStyleSmooth: 0,
     /** 自然，算法更多地保留了面部细节，磨皮效果更加自然，适用于绝大多数直播场景 */
@@ -195,12 +192,27 @@ var TRTCBeautyStyle_HACK_JSDOC = {
     /** 优图，由优图实验室提供，磨皮效果介于光滑和自然之间，比光滑保留更多皮肤细节，比自然磨皮程度更高 */
     TRTCBeautyStylePitu: 2,
 };
-var TRTCBeautyStyle;
+export var TRTCBeautyStyle;
 (function (TRTCBeautyStyle) {
     TRTCBeautyStyle[TRTCBeautyStyle["TRTCBeautyStyleSmooth"] = 0] = "TRTCBeautyStyleSmooth";
     TRTCBeautyStyle[TRTCBeautyStyle["TRTCBeautyStyleNature"] = 1] = "TRTCBeautyStyleNature";
     TRTCBeautyStyle[TRTCBeautyStyle["TRTCBeautyStylePitu"] = 2] = "TRTCBeautyStylePitu";
-})(TRTCBeautyStyle = exports.TRTCBeautyStyle || (exports.TRTCBeautyStyle = {}));
+})(TRTCBeautyStyle || (TRTCBeautyStyle = {}));
+/**
+ * 背景音效<br>
+ * @enum {Number}
+ */
+export class AudioMusicParam {
+    constructor(id, path, loopCount, publish, isShortFile, startTimeMS, endTimeMS) {
+        this.id = id;
+        this.path = path;
+        this.loopCount = loopCount;
+        this.publish = publish;
+        this.isShortFile = isShortFile;
+        this.startTimeMS = startTimeMS;
+        this.endTimeMS = endTimeMS;
+    }
+}
 /////////////////////////////////////////////////////////////////////////////////
 //
 //                    【（二）网络相关枚举值定义】
@@ -215,7 +227,7 @@ var TRTCBeautyStyle;
  * - TRTCAppSceneVoiceChatRoom：语音互动直播，适合：[语音低延时直播]、[语音直播连麦]、[语聊房]、[K 歌房]、[FM 电台]等。
  * @enum {Number}
  */
-var TRTCAppScene_HACK_JSDOC = {
+const TRTCAppScene_HACK_JSDOC = {
     /**
      * 视频通话场景，支持720P、1080P高清画质，单个房间最多支持300人同时在线，最高支持50人同时发言。<br>
      * 适合：[视频低延时直播]、[十万人互动课堂]、[视频直播 PK]、[视频相亲房]、[互动课堂]、[远程培训]、[超大型会议]等。<br>
@@ -239,13 +251,13 @@ var TRTCAppScene_HACK_JSDOC = {
      */
     TRTCAppSceneVoiceChatRoom: 3,
 };
-var TRTCAppScene;
+export var TRTCAppScene;
 (function (TRTCAppScene) {
     TRTCAppScene[TRTCAppScene["TRTCAppSceneVideoCall"] = 0] = "TRTCAppSceneVideoCall";
     TRTCAppScene[TRTCAppScene["TRTCAppSceneLIVE"] = 1] = "TRTCAppSceneLIVE";
     TRTCAppScene[TRTCAppScene["TRTCAppSceneAudioCall"] = 2] = "TRTCAppSceneAudioCall";
     TRTCAppScene[TRTCAppScene["TRTCAppSceneVoiceChatRoom"] = 3] = "TRTCAppSceneVoiceChatRoom";
-})(TRTCAppScene = exports.TRTCAppScene || (exports.TRTCAppScene = {}));
+})(TRTCAppScene || (TRTCAppScene = {}));
 /**
  * 角色，仅适用于直播场景（TRTCAppSceneLIVE 和 TRTCAppSceneVoiceChatRoom）<br>
  * 在直播场景中，多数用户只是观众，只有个别用户是主播，这种角色区分可以有利于 TRTC 进行更好的定向优化。
@@ -254,17 +266,17 @@ var TRTCAppScene;
  *
  * @enum {Number}
  */
-var TRTCRoleType_HACK_JSDOC = {
+const TRTCRoleType_HACK_JSDOC = {
     /** 主播 */
     TRTCRoleAnchor: 20,
     /** 观众 */
     TRTCRoleAudience: 21,
 };
-var TRTCRoleType;
+export var TRTCRoleType;
 (function (TRTCRoleType) {
     TRTCRoleType[TRTCRoleType["TRTCRoleAnchor"] = 20] = "TRTCRoleAnchor";
     TRTCRoleType[TRTCRoleType["TRTCRoleAudience"] = 21] = "TRTCRoleAudience";
-})(TRTCRoleType = exports.TRTCRoleType || (exports.TRTCRoleType = {}));
+})(TRTCRoleType || (TRTCRoleType = {}));
 /////////////////////////////////////////////////////////////////////////////////
 //
 //                    【（三）音频相关枚举值定义】
@@ -274,7 +286,7 @@ var TRTCRoleType;
  * 音频质量<br>
  * @enum {Number}
  */
-var TRTCAudioQuality_HACK_JSDOC = {
+const TRTCAudioQuality_HACK_JSDOC = {
     /** 人声模式：适用于以人声沟通为主的应用场景，该模式下音频传输的抗性较强，TRTC 会通过各种人声处理技术保障在弱网络环境下的流畅度最佳 */
     TRTCAudioQualitySpeech: 1,
     /** 标准模式（或者默认模式）：介于 Speech 和 Music 之间的档位，对音乐的还原度比人声模式要好，但传输数据量比音乐模式要低很多，对各种场景均有不错的适应性，如无特殊需求推荐选择之。 */
@@ -282,12 +294,12 @@ var TRTCAudioQuality_HACK_JSDOC = {
     /** 音乐模式：适用于对声乐要求很苛刻的场景，该模式下音频传输的数据量很大，TRTC 会通过各项技术确保音乐信号在各频段均能获得高保真的细节还原度 */
     TRTCAudioQualityMusic: 3
 };
-var TRTCAudioQuality;
+export var TRTCAudioQuality;
 (function (TRTCAudioQuality) {
     TRTCAudioQuality[TRTCAudioQuality["TRTCAudioQualitySpeech"] = 1] = "TRTCAudioQualitySpeech";
     TRTCAudioQuality[TRTCAudioQuality["TRTCAudioQualityDefault"] = 2] = "TRTCAudioQualityDefault";
     TRTCAudioQuality[TRTCAudioQuality["TRTCAudioQualityMusic"] = 3] = "TRTCAudioQualityMusic";
-})(TRTCAudioQuality = exports.TRTCAudioQuality || (exports.TRTCAudioQuality = {}));
+})(TRTCAudioQuality || (TRTCAudioQuality = {}));
 /////////////////////////////////////////////////////////////////////////////////
 //
 //                      【（四）TRTC 核心类型定义】
@@ -320,8 +332,8 @@ var TRTCAudioQuality;
  *                                            【推荐取值】限制长度为64字节，只允许包含大小写英文字母（a-zA-Z）、数字（0-9）及下划线和连词符。<br>
  *                                            【参考文档】[云端录制](https://cloud.tencent.com/document/product/647/16823)。
  */
-var TRTCParams = /** @class */ (function () {
-    function TRTCParams(sdkAppId, userId, roomId, userSig, strRoomId, privateMapKey, role, businessInfo, streamId, userDefineRecordId) {
+export class TRTCParams {
+    constructor(sdkAppId, userId, roomId, userSig, strRoomId, privateMapKey, role, businessInfo, streamId, userDefineRecordId) {
         this.sdkAppId = sdkAppId;
         this.userId = userId;
         this.roomId = roomId;
@@ -333,9 +345,7 @@ var TRTCParams = /** @class */ (function () {
         this.streamId = streamId;
         this.userDefineRecordId = userDefineRecordId;
     }
-    return TRTCParams;
-}());
-exports.TRTCParams = TRTCParams;
+}
 /**
  * 视频编码参数<br>
  * 该设置决定了远端用户看到的画面质量（同时也是云端录制出的视频文件的画面质量）。
@@ -371,14 +381,8 @@ exports.TRTCParams = TRTCParams;
  *                                                     - 默认值：NO。<br>
  *                                                    【特别说明】若有录制需求，选择 YES 时，请确保通话过程中，调整分辨率不会影响您的录制效果。<br>
  */
-var TRTCVideoEncParam = /** @class */ (function () {
-    function TRTCVideoEncParam(videoResolution, resMode, videoFps, videoBitrate, minVideoBitrate, enableAdjustRes) {
-        if (videoResolution === void 0) { videoResolution = TRTCVideoResolution.TRTCVideoResolution_640_360; }
-        if (resMode === void 0) { resMode = TRTCVideoResolutionMode.TRTCVideoResolutionModePortrait; }
-        if (videoFps === void 0) { videoFps = 15; }
-        if (videoBitrate === void 0) { videoBitrate = 550; }
-        if (minVideoBitrate === void 0) { minVideoBitrate = 0; }
-        if (enableAdjustRes === void 0) { enableAdjustRes = false; }
+export class TRTCVideoEncParam {
+    constructor(videoResolution = TRTCVideoResolution.TRTCVideoResolution_640_360, resMode = TRTCVideoResolutionMode.TRTCVideoResolutionModePortrait, videoFps = 15, videoBitrate = 550, minVideoBitrate = 0, enableAdjustRes = false) {
         this.videoResolution = videoResolution;
         this.videoResolutionMode = resMode;
         this.videoFps = videoFps;
@@ -386,9 +390,7 @@ var TRTCVideoEncParam = /** @class */ (function () {
         this.minVideoBitrate = minVideoBitrate;
         this.enableAdjustRes = enableAdjustRes;
     }
-    return TRTCVideoEncParam;
-}());
-exports.TRTCVideoEncParam = TRTCVideoEncParam;
+}
 ;
 /**
  * 画面渲染参数<br>
@@ -397,40 +399,35 @@ exports.TRTCVideoEncParam = TRTCVideoEncParam;
  * @param {TRTCVideoFillMode} fillMode  - 【字段含义】视频画面填充模式
  * @param {TRTCVideoMirrorType} mirrorType  - 【字段含义】画面渲染镜像类型
  */
-var TRTCRenderParams = /** @class */ (function () {
-    function TRTCRenderParams(rotation, fillMode, mirrorType) {
-        if (rotation === void 0) { rotation = TRTCVideoRotation.TRTCVideoRotation_0; }
-        if (fillMode === void 0) { fillMode = TRTCVideoFillMode.TRTCVideoFillMode_Fit; }
-        if (mirrorType === void 0) { mirrorType = TRTCVideoMirrorType.TRTCVideoMirrorType_Disable; }
+export class TRTCRenderParams {
+    constructor(rotation = TRTCVideoRotation.TRTCVideoRotation_0, fillMode = TRTCVideoFillMode.TRTCVideoFillMode_Fit, mirrorType = TRTCVideoMirrorType.TRTCVideoMirrorType_Disable) {
         this.rotation = rotation;
         this.fillMode = fillMode;
         this.mirrorType = mirrorType;
     }
-    return TRTCRenderParams;
-}());
-exports.TRTCRenderParams = TRTCRenderParams;
+}
 /**
  * 音频路由（即声音的播放模式）<br>
  * @enum {Number}
  */
-var TRTCAudioRoute_HACK_JSDOC = {
+const TRTCAudioRoute_HACK_JSDOC = {
     /** 使用扬声器播放（即“免提”），扬声器位于手机底部，声音偏大，适合外放音乐 */
     TRTCAudioRouteSpeaker: 0,
     /** 使用听筒播放，听筒位于手机顶部，声音偏小，适合需要保护隐私的通话场景 */
     TRTCAudioRouteEarpiece: 1,
 };
-var TRTCAudioRoute;
+export var TRTCAudioRoute;
 (function (TRTCAudioRoute) {
     TRTCAudioRoute[TRTCAudioRoute["TRTCAudioRouteSpeaker"] = 0] = "TRTCAudioRouteSpeaker";
     TRTCAudioRoute[TRTCAudioRoute["TRTCAudioRouteEarpiece"] = 1] = "TRTCAudioRouteEarpiece";
-})(TRTCAudioRoute = exports.TRTCAudioRoute || (exports.TRTCAudioRoute = {}));
+})(TRTCAudioRoute || (TRTCAudioRoute = {}));
 /////////////////////////////////////////////////////////////////////////////////
 //
 //                    【其它参数】
 //
 /////////////////////////////////////////////////////////////////////////////////
-var TRTCShareSource;
+export var TRTCShareSource;
 (function (TRTCShareSource) {
     TRTCShareSource["InApp"] = "InApp";
     TRTCShareSource["ByReplaykit"] = "ByReplaykit";
-})(TRTCShareSource = exports.TRTCShareSource || (exports.TRTCShareSource = {}));
+})(TRTCShareSource || (TRTCShareSource = {}));

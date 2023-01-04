@@ -1,33 +1,4 @@
-"use strict";
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = function (d, b) {
-        extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p]; };
-        return extendStatics(d, b);
-    };
-    return function (d, b) {
-        if (typeof b !== "function" && b !== null)
-            throw new TypeError("Class extends value " + String(b) + " is not a constructor or null");
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
-var __assign = (this && this.__assign) || function () {
-    __assign = Object.assign || function(t) {
-        for (var s, i = 1, n = arguments.length; i < n; i++) {
-            s = arguments[i];
-            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
-                t[p] = s[p];
-        }
-        return t;
-    };
-    return __assign.apply(this, arguments);
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.generateError_ = exports.TXLiteJSError = exports.TXLiteAVWarning = exports.TXLiteAVError = void 0;
-var constants_1 = require("./constants");
+import { NAME, errorCodeUrl } from './constants';
 /**
  * @namespace ErrorCode
  *
@@ -110,7 +81,7 @@ var constants_1 = require("./constants");
  * |ERR_SERVER_CENTER_CONN_ROOM_CONNED_USER_FULL|-102050|被连麦用户达到资源上限|
  * |ERR_SERVER_CENTER_CONN_ROOM_INVALID_SEQ|-102051|连麦请求序号错乱|
  */
-exports.TXLiteAVError = {
+export const TXLiteAVError = {
     /** 无错误 */
     ERR_NULL: 0,
     /** 进入房间失败 */
@@ -495,7 +466,7 @@ exports.TXLiteAVError = {
  * |WARNING_ROOM_DISCONNECT|5101|网络断开连接|
  * |WARNING_IGNORE_UPSTREAM_FOR_AUDIENCE|6001|当前是观众角色，忽略上行音视频数据|
  */
-exports.TXLiteAVWarning = {
+export const TXLiteAVWarning = {
     /** 硬编码启动出现问题，自动切换到软编码 */
     WARNING_HW_ENCODER_START_FAIL: 1103,
     /** 当前 CPU 使用率太高，无法满足软件编码需求，自动切换到硬件编码 */
@@ -568,7 +539,7 @@ exports.TXLiteAVWarning = {
  * @namespace ErrorCode
  * @description 错误码
  */
-exports.TXLiteJSError = {
+export const TXLiteJSError = {
     /**
      * 未知错误
      * @default 0xFFFF
@@ -590,9 +561,9 @@ exports.TXLiteJSError = {
      */
     INVALID_OPERATION: 0x1001,
 };
-var getErrorName = function (code) {
-    for (var key in exports.TXLiteJSError) {
-        if (exports.TXLiteJSError[key] === code) {
+const getErrorName = function (code) {
+    for (let key in TXLiteJSError) {
+        if (TXLiteJSError[key] === code) {
             return key;
         }
     }
@@ -603,46 +574,39 @@ var getErrorName = function (code) {
  * @extends Error
  * @namespace ErrorCode
  */
-var TrtcError = /** @class */ (function (_super) {
-    __extends(TrtcError, _super);
-    function TrtcError(_a) {
-        var _b = _a.code, code = _b === void 0 ? exports.TXLiteJSError.UNKNOWN : _b, message = _a.message, extraInfo = _a.extraInfo;
-        var _this = this;
+class TrtcError extends Error {
+    constructor({ code = TXLiteJSError.UNKNOWN, message, extraInfo }) {
         if (extraInfo) {
-            var tempError = {
+            const tempError = {
                 errCode: code,
                 errMsg: message,
-                extraInfo: __assign(__assign({}, extraInfo), { errCodeUrl: constants_1.errorCodeUrl }),
+                extraInfo: Object.assign(Object.assign({}, extraInfo), { errCodeUrl: errorCodeUrl }),
             };
-            _this = _super.call(this, JSON.stringify(tempError)) || this;
+            super(JSON.stringify(tempError));
         }
         else {
-            _this = _super.call(this, message +
-                " <".concat(getErrorName(code), " 0x").concat(code.toString(16), ">. Refer to: ").concat(constants_1.errorCodeUrl)) || this;
+            super(message +
+                ` <${getErrorName(code)} 0x${code.toString(16)}>. Refer to: ${errorCodeUrl}`);
         }
-        _this.errCode = code;
-        _this.errMsg = message;
-        _this.extraInfo = __assign(__assign({}, extraInfo), { errCodeUrl: constants_1.errorCodeUrl });
-        return _this;
+        this.errCode = code;
+        this.errMsg = message;
+        this.extraInfo = Object.assign(Object.assign({}, extraInfo), { errCodeUrl: errorCodeUrl });
     }
     /**
      * 获取错误码<br>
      * 详细错误码列表参见 {@link module:ErrorCode ErrorCode}
      * @memberof TrtcError
      */
-    TrtcError.prototype.getCode = function () {
+    getCode() {
         return this.errCode;
-    };
-    return TrtcError;
-}(Error));
-exports.default = TrtcError;
-function generateError_(error, code, extraInfo) {
-    if (code === void 0) { code = exports.TXLiteJSError.UNKNOWN; }
+    }
+}
+export default TrtcError;
+export function generateError_(error, code = TXLiteJSError.UNKNOWN, extraInfo) {
     return new TrtcError({
         code: error.code || code,
-        message: "".concat(constants_1.NAME.LOG_PREFIX).concat(error.message),
-        extraInfo: extraInfo,
+        message: `${NAME.LOG_PREFIX}${error.message}`,
+        extraInfo,
     });
 }
-exports.generateError_ = generateError_;
 ;
