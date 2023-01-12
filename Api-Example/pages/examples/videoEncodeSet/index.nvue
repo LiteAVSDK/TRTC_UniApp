@@ -23,12 +23,28 @@
 			<input class="trtc-input" style="width: 182.69rpx;" auto-blur=true :value="userId"
 				@input="bindInputChange($event, 'userId')" />
 		</view>
+
+		<view class="trtc-encode-area">
+			<view class="uni-form-item uni-column">
+				<picker @change="e => selectChange('RESOLUTION', e)" :value="resolutionIndex" :range="TRTCVideoResolutionList">
+					<label style="margin-left: 12px;">分辨率选择：{{TRTCVideoResolutionList[resolutionIndex]}}</label>
+				</picker>
+				<picker @change="e => selectChange('RESOLUTION_MODE', e)" :value="resolutionModeIndex" :range="TRTCVideoResolutionModeList">
+					<label style="margin-left: 12px;">分辨率模式选择：{{TRTCVideoResolutionModeList[resolutionModeIndex]}}</label>
+				</picker>
+				<picker @change="e => selectChange('FPS', e)" :value="videoFpsIndex" :range="TRTCVideoFpsList">
+					<label style="margin-left: 12px;">视频帧率选择：{{TRTCVideoFpsList[videoFpsIndex]}}</label>
+				</picker>
+				<picker @change="e => selectChange('BIT_RATE', e)" :value="videoBitrateIndex" :range="TRTCVideoBitrateList">
+					<label style="margin-left: 12px;">视频帧率选择：{{TRTCVideoBitrateList[videoBitrateIndex]}}</label>
+				</picker>
+			</view>
+		</view>
+
 		<view class="trtc-line"></view>
 		<button class="trtc-btn-long" style="margin-top: 20rpx;" type="primary" @click="enterRoom">Enter Room</button>
     <button class="trtc-btn-long" style="margin-top: 20rpx;" type="primary" @click="startLocalPreview">Start Local Preview</button>
-		<radio-group class="radio-group-container" @change="videoRotate">
-			<view class="item-container" v-for="(item, index) in TRTCVideoRotationSettings"><radio :value="item.value" />{{item.name}}</view>
-		</radio-group>
+		<button class="trtc-btn-long" style="margin-top: 20rpx;" type="primary" @click="setVideoEncoderParam">Set Encode Param</button>
 		<button class="trtc-btn-long" style="margin-top: 20rpx;" type="primary" @click="exitRoom">Exit Room</button>
 		<button class="trtc-btn-long" type="primary" @click="destroyInstance">Destroy TrtcCloud</button>
 	</div>
@@ -37,7 +53,7 @@
 <script>
 	import permision from "@/TrtcCloud/permission.js";
 	import TrtcCloud from '@/TrtcCloud/lib/index';
-	import { TRTCAppScene, TRTCVideoStreamType, TRTCVideoRotation } from '@/TrtcCloud/lib/TrtcDefines';
+	import { TRTCAppScene, TRTCVideoStreamType, TRTCVideoResolution, TRTCVideoResolutionMode, TRTCVideoEncParam } from '@/TrtcCloud/lib/TrtcDefines';
 	import genTestUserSig from '@/debug/GenerateTestUserSig';
 	import TrtcLocalView from '@/TrtcCloud/view/TrtcLocalView';
 	import TrtcRemoteView from '@/TrtcCloud/view/TrtcRemoteView';
@@ -60,15 +76,43 @@
 				isFrontCamera: true,
 				streamType: TRTCVideoStreamType.TRTCVideoStreamTypeBig,
 				remoteUserId: '',
-				TRTCVideoRotationSettings: [
-					{ value: TRTCVideoRotation.TRTCVideoRotation_0, name: '不旋转' },
-					{ value: TRTCVideoRotation.TRTCVideoRotation_90, name: '顺时针旋转90度' },
-					{ value: TRTCVideoRotation.TRTCVideoRotation_180, name: '顺时针旋转180度' },
-					{ value: TRTCVideoRotation.TRTCVideoRotation_270, name: '顺时针旋转270度' },
-				],
+				TRTCVideoResolutionObject: {
+					'120*120': TRTCVideoResolution.TRTCVideoResolution_120_120,
+					'160*1160': TRTCVideoResolution.TRTCVideoResolution_160_160,
+					'270*270': TRTCVideoResolution.TRTCVideoResolution_270_270,
+					'480*480': TRTCVideoResolution.TRTCVideoResolution_480_480,
+					'160*120': TRTCVideoResolution.TRTCVideoResolution_160_120,
+					'240*180': TRTCVideoResolution.TRTCVideoResolution_240_180,
+					'280*210': TRTCVideoResolution.TRTCVideoResolution_280_210,
+					'320*240': TRTCVideoResolution.TRTCVideoResolution_320_240,
+					'400*300': TRTCVideoResolution.TRTCVideoResolution_400_300,
+					'480*360': TRTCVideoResolution.TRTCVideoResolution_480_360,
+					'640*480': TRTCVideoResolution.TRTCVideoResolution_640_480,
+					'960*720': TRTCVideoResolution.TRTCVideoResolution_960_720,
+					'160*90': TRTCVideoResolution.TRTCVideoResolution_160_90,
+					'256*144': TRTCVideoResolution.TRTCVideoResolution_256_144,
+					'320*180': TRTCVideoResolution.TRTCVideoResolution_320_180,
+					'480*270': TRTCVideoResolution.TRTCVideoResolution_480_270,
+					'640*360': TRTCVideoResolution.TRTCVideoResolution_640_360,
+					'960*540': TRTCVideoResolution.TRTCVideoResolution_960_540,
+					'1280*720': TRTCVideoResolution.TRTCVideoResolution_1280_720,
+					'1920*1080': TRTCVideoResolution.TRTCVideoResolution_1920_1080,
+				},
+				resolutionIndex: 10,
+				TRTCVideoResolutionList: [],
+				// TRTCVideoResolutionModeLandscape = 0 横屏分辨率; TRTCVideoResolutionModePortrait = 1 竖屏分辨率
+				resolutionModeIndex: 0,
+				TRTCVideoResolutionModeList: [TRTCVideoResolutionMode.TRTCVideoResolutionModeLandscape, TRTCVideoResolutionMode.TRTCVideoResolutionModePortrait],
+				// 视频帧率: 15fps 或 20fps
+				videoFpsIndex: 0,
+				TRTCVideoFpsList: [15, 20], // 15fps或20fps。5fps以下，卡顿感明显。10fps以下，会有轻微卡顿感。20fps以上，会浪费带宽（电影的帧率为24fps）
+				// 视频码率
+				videoBitrateIndex: 0,
+				TRTCVideoBitrateList: [900, 1200],
 			}
 		},
 		mounted() {
+			this.TRTCVideoResolutionList = Object.keys(this.TRTCVideoResolutionObject);
 			if (uni.getSystemInfoSync().platform === 'android') {
 				permision.requestAndroidPermission('android.permission.RECORD_AUDIO');
 				permision.requestAndroidPermission('android.permission.CAMERA');
@@ -96,6 +140,27 @@
 			this.destroyInstance();
 		},
 		methods: {
+			selectChange(type, e) {
+				console.log('picker 选择改变，携带值为 ', type, e.detail.value);
+				switch (type) {
+					case 'RESOLUTION': {
+						this.resolutionIndex = e.detail.value;
+						break;
+					}
+					case 'RESOLUTION_MODE': {
+						this.resolutionModeIndex = e.detail.value;
+						break;
+					}
+					case 'FPS': {
+						this.videoFpsIndex = e.detail.value;
+						break;
+					}
+					case 'BIT_RATE': {
+						this.videoBitrateIndex = e.detail.value;
+						break;
+					}
+				}
+			},
 			bindInputChange(event, type) {
 				const value = event.detail.value;
 				switch (type) {
@@ -139,6 +204,8 @@
 						title: 'enterRoom ',
 						icon: 'none',
 					});
+					// 【3】设置编码参数
+					this.setVideoEncoderParam();
 				} catch (error) {
 					console.log(`enterRoom error = ${JSON.stringify(error)}`);
 				}
@@ -149,6 +216,7 @@
 					this.stopRemoteView();
           this.stopLocalAudio();
 					this.trtcCloud.exitRoom();
+					this.handleUninstallEvents();
           this.remoteUserId = '';
 				} catch (e) {
 					// TODO handle the exception
@@ -162,6 +230,16 @@
 					icon: 'none',
 				});
 			},
+			// 设备本地视频编码器参数
+			setVideoEncoderParam() {
+				const videoResolution = this.TRTCVideoResolutionObject[this.TRTCVideoResolutionList[this.resolutionIndex]];
+				const videoResolutionMode = this.TRTCVideoResolutionModeList[this.resolutionModeIndex];
+				const videoFps = this.TRTCVideoFpsList[this.videoFpsIndex];
+				const videoBitrate = this.TRTCVideoBitrateList[this.videoBitrateIndex];
+				console.warn('--- 分辨率 = ', videoResolution, videoResolutionMode, videoFps, videoBitrate);
+				const param = new TRTCVideoEncParam(videoResolution, videoResolutionMode, videoFps, videoBitrate);
+				this.trtcCloud.setVideoEncoderParam(param);
+			},
 			stopLocalPreview() {
 				this.trtcCloud.stopLocalPreview();
 			},
@@ -169,12 +247,6 @@
 				if (this.remoteUserId) {
 					this.trtcCloud.stopRemoteView(this.remoteUserId, this.streamType);
 				}
-			},
-			// 屏幕旋转
-			videoRotate(e) {
-				const { value } = e.detail;
-				console.log('旋转 = ', value);
-				this.trtcCloud.setLocalRenderParams({ rotation: value });
 			},
 			handleEvents() {
 				this.trtcCloud.on('onWarning', (res) => {
@@ -229,6 +301,12 @@
             this.trtcCloud.startRemoteView(this.remoteUserId, this.streamType, this.remoteUserId);
 					}
 				});
+				this.trtcCloud.on('onStatistics', (res) => {
+					// console.warn('--- onStatistics ', JSON.stringify(res));
+				});
+				this.trtcCloud.on('onUserVideoSizeChanged', (res) => {
+					console.warn('--- onUserVideoSizeChanged ', JSON.stringify(res));
+				});
 			},
       handleUninstallEvents() {
 				this.trtcCloud.off('*');
@@ -252,4 +330,5 @@
 		flex-direction: row;
 		margin-bottom: 14rpx;
 	}
+	.trtc-encode-area {}
 </style>

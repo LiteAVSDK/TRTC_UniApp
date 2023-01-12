@@ -54,6 +54,10 @@ function genTestUserSig(userID) {
   };
 }
 
-module.exports = {
-  genTestUserSig,
-};
+// module.exports = {
+//   genTestUserSig,
+// };
+
+// HBuilder 选择 vue3 时, 上面的打包无法通过 import 进行引入
+export default genTestUserSig;
+

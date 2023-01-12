@@ -262,10 +262,18 @@
    }
  }
  
- module.exports = {
-   judgeIosPermission: judgeIosPermission,
-   requestAndroidPermission: requestAndroidPermission,
-   checkSystemEnableLocation: checkSystemEnableLocation,
-   gotoAppPermissionSetting: gotoAppPermissionSetting
- }
+//  module.exports = {
+//    judgeIosPermission: judgeIosPermission,
+//    requestAndroidPermission: requestAndroidPermission,
+//    checkSystemEnableLocation: checkSystemEnableLocation,
+//    gotoAppPermissionSetting: gotoAppPermissionSetting
+//  }
+
+// HBuilder 选择 vue3 时, 上面的打包无法通过 import 进行引入
+export default {
+  judgeIosPermission: judgeIosPermission,
+  requestAndroidPermission: requestAndroidPermission,
+  checkSystemEnableLocation: checkSystemEnableLocation,
+  gotoAppPermissionSetting: gotoAppPermissionSetting
+};
  

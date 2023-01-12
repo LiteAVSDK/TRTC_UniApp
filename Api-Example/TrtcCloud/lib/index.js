@@ -1,34 +1,13 @@
-"use strict";
-var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    var desc = Object.getOwnPropertyDescriptor(m, k);
-    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
-      desc = { enumerable: true, get: function() { return m[k]; } };
-    }
-    Object.defineProperty(o, k2, desc);
-}) : (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    o[k2] = m[k];
-}));
-var __exportStar = (this && this.__exportStar) || function(m, exports) {
-    for (var p in m) if (p !== "default" && !Object.prototype.hasOwnProperty.call(exports, p)) __createBinding(exports, m, p);
-};
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-var TrtcCloudImpl_1 = __importDefault(require("./TrtcCloudImpl"));
-var TrtcDefines_1 = require("./TrtcDefines");
-var version = '1.0.9';
-__exportStar(require("./TrtcDefines"), exports);
+import TrtcCloudImpl from './TrtcCloudImpl';
+import { TRTCVideoStreamType, } from './TrtcDefines';
+const version = '1.1.0';
+export * from './TrtcDefines';
 /**
  * TrtcCloud
  *
  * @class TrtcCloud
  */
-var TrtcCloud = /** @class */ (function () {
-    function TrtcCloud() {
-    }
+export default class TrtcCloud {
     /**
      * 创建 TrtcCloud 单例
      *
@@ -37,12 +16,12 @@ var TrtcCloud = /** @class */ (function () {
      * @example
      * TrtcCloud.createInstance();
      */
-    TrtcCloud.createInstance = function () {
+    static createInstance() {
         console.log('----------------------------------------------------------------');
-        console.log("                        SDK ".concat(version, "                    "));
+        console.log(`                        SDK ${version}                    `);
         console.log('----------------------------------------------------------------');
-        return TrtcCloudImpl_1.default._createInstance();
-    };
+        return TrtcCloudImpl._createInstance();
+    }
     /**
      * 销毁 TrtcCloud 单例
      *
@@ -51,9 +30,9 @@ var TrtcCloud = /** @class */ (function () {
      * @example
      * TrtcCloud.destroyInstance();
      */
-    TrtcCloud.destroyInstance = function () {
-        return TrtcCloudImpl_1.default._destroyInstance();
-    };
+    static destroyInstance() {
+        return TrtcCloudImpl._destroyInstance();
+    }
     /**
      * 设置 TrtcCloud 事件监听
      *
@@ -65,9 +44,9 @@ var TrtcCloud = /** @class */ (function () {
      * this.trtcCloud = TrtcCloud.createInstance(); // 创建 trtcCloud 实例
      * this.trtcCloud.on('onEnterRoom', (res) => {});
      */
-    TrtcCloud.prototype.on = function (event, callback) {
-        return TrtcCloudImpl_1.default._getInstance().on(event, callback);
-    };
+    on(event, callback) {
+        return TrtcCloudImpl._getInstance().on(event, callback);
+    }
     /**
      * 取消事件绑定<br>
      *
@@ -78,9 +57,9 @@ var TrtcCloud = /** @class */ (function () {
      *
      * this.trtcCloud.off('*'); // 取消所有绑定的事件
      */
-    TrtcCloud.prototype.off = function (event) {
-        return TrtcCloudImpl_1.default._getInstance().off(event);
-    };
+    off(event) {
+        return TrtcCloudImpl._getInstance().off(event);
+    }
     /**
      * 进房<br>
      * 调用接口后，您会收到来自 TRTCCallback 中的 [onEnterRoom(result)]{@link TRTCCallback#onEnterRoom} 回调
@@ -133,9 +112,9 @@ var TrtcCloud = /** @class */ (function () {
      * };
      * this.trtcCloud.enterRoom(params, TRTCAppScene.TRTCAppSceneVideoCall);
      */
-    TrtcCloud.prototype.enterRoom = function (params, scene) {
-        return TrtcCloudImpl_1.default._getInstance().enterRoom(params, scene);
-    };
+    enterRoom(params, scene) {
+        return TrtcCloudImpl._getInstance().enterRoom(params, scene);
+    }
     /**
      * 退房<br>
      * 执行退出房间的相关逻辑释放资源后，SDK 会通过 `onExitRoom()` 回调通知到您
@@ -147,9 +126,9 @@ var TrtcCloud = /** @class */ (function () {
      * @example
      * this.trtcCloud.exitRoom();
      */
-    TrtcCloud.prototype.exitRoom = function () {
-        return TrtcCloudImpl_1.default._getInstance().exitRoom();
-    };
+    exitRoom() {
+        return TrtcCloudImpl._getInstance().exitRoom();
+    }
     /**
      * 切换角色，仅适用于直播场景（TRTCAppSceneLIVE 和 TRTCAppSceneVoiceChatRoom）
      *
@@ -165,9 +144,9 @@ var TrtcCloud = /** @class */ (function () {
      * import { TRTCRoleType } from '@/TrtcCloud/lib/TrtcDefines';
      * this.trtcCloud.switchRole(TRTCRoleType.TRTCRoleAudience);
      */
-    TrtcCloud.prototype.switchRole = function (role) {
-        return TrtcCloudImpl_1.default._getInstance().switchRole(role);
-    };
+    switchRole(role) {
+        return TrtcCloudImpl._getInstance().switchRole(role);
+    }
     /**
      * 开启本地视频的预览画面<br>
      * 当开始渲染首帧摄像头画面时，您会收到 `onFirstVideoFrame(null)` 回调
@@ -180,10 +159,28 @@ var TrtcCloud = /** @class */ (function () {
      * const viewId = this.userId;
      * this.trtcCloud.startLocalPreview(true, viewId);
      */
-    TrtcCloud.prototype.startLocalPreview = function (isFrontCamera, viewId) {
-        if (isFrontCamera === void 0) { isFrontCamera = true; }
-        return TrtcCloudImpl_1.default._getInstance().startLocalPreview(isFrontCamera, viewId);
-    };
+    startLocalPreview(isFrontCamera = true, viewId) {
+        return TrtcCloudImpl._getInstance().startLocalPreview(isFrontCamera, viewId);
+    }
+    /**
+     * 设置视频编码器的编码参数
+     * - 该设置能够决定远端用户看到的画面质量，同时也能决定云端录制出的视频文件的画面质量。
+     * @param {TRTCVideoEncParam} param 用于设置视频编码器的相关参数
+     * @memberof TrtcCloud
+     * @example
+     * const param = {
+     *   videoResolution: TRTCVideoResolution.TRTCVideoResolution_640_360,
+     *   videoResolutionMode: TRTCVideoResolutionMode.TRTCVideoResolutionModePortrait,
+     *   videoFps: 15,
+     *   videoBitrate: 900,
+     *   minVideoBitrate: 200,
+     *   enableAdjustRes: false,
+     * };
+     * this.trtcCloud.setVideoEncoderParam(param);
+     */
+    setVideoEncoderParam(param) {
+        return TrtcCloudImpl._getInstance().setVideoEncoderParam(param);
+    }
     /**
      * 切换前置或后置摄像头
      *
@@ -194,9 +191,9 @@ var TrtcCloud = /** @class */ (function () {
      * const isFrontCamera = true;
      * this.trtcCloud.switchCamera(isFrontCamera);
      */
-    TrtcCloud.prototype.switchCamera = function (isFrontCamera) {
-        return TrtcCloudImpl_1.default._getInstance().switchCamera(isFrontCamera);
-    };
+    switchCamera(isFrontCamera) {
+        return TrtcCloudImpl._getInstance().switchCamera(isFrontCamera);
+    }
     /**
      * 停止本地视频采集及预览
      *
@@ -204,9 +201,9 @@ var TrtcCloud = /** @class */ (function () {
      * @example
      * this.trtcCloud.stopLocalPreview();
      */
-    TrtcCloud.prototype.stopLocalPreview = function () {
-        return TrtcCloudImpl_1.default._getInstance().stopLocalPreview();
-    };
+    stopLocalPreview() {
+        return TrtcCloudImpl._getInstance().stopLocalPreview();
+    }
     /**
      * 设置本地画面的渲染参数，可设置的参数包括有：画面的旋转角度、填充模式以及左右镜像等。
      * @param {TRTCRenderParams} params - 本地图像的参数
@@ -224,9 +221,9 @@ var TrtcCloud = /** @class */ (function () {
      * };
      * this.trtcCloud.setLocalRenderParams(renderParams);
      */
-    TrtcCloud.prototype.setLocalRenderParams = function (params) {
-        return TrtcCloudImpl_1.default._getInstance().setLocalRenderParams(params);
-    };
+    setLocalRenderParams(params) {
+        return TrtcCloudImpl._getInstance().setLocalRenderParams(params);
+    }
     /**
      * 暂停/恢复发布本地的视频流
      *
@@ -238,9 +235,9 @@ var TrtcCloud = /** @class */ (function () {
      * @example
      * this.trtcCloud.muteLocalVideo(TRTCVideoStreamType.TRTCVideoStreamTypeBig, true);
      */
-    TrtcCloud.prototype.muteLocalVideo = function (streamType, mute) {
-        return TrtcCloudImpl_1.default._getInstance().muteLocalVideo(streamType, mute);
-    };
+    muteLocalVideo(streamType, mute) {
+        return TrtcCloudImpl._getInstance().muteLocalVideo(streamType, mute);
+    }
     /**
      * 显示远端视频或辅流<br>
      *
@@ -256,9 +253,9 @@ var TrtcCloud = /** @class */ (function () {
      * const viewId = this.remoteUserId;
      * this.trtcCloud.startRemoteView(userId, TRTCVideoStreamType.TRTCVideoStreamTypeBig, viewId);
      */
-    TrtcCloud.prototype.startRemoteView = function (userId, streamType, viewId) {
-        return TrtcCloudImpl_1.default._getInstance().startRemoteView(userId, streamType, viewId);
-    };
+    startRemoteView(userId, streamType, viewId) {
+        return TrtcCloudImpl._getInstance().startRemoteView(userId, streamType, viewId);
+    }
     /**
      * 停止显示远端视频画面，同时不再拉取该远端用户的视频数据流<br>
      * 指定要停止观看的 userId 的视频流类型
@@ -273,9 +270,9 @@ var TrtcCloud = /** @class */ (function () {
      * import { TRTCVideoStreamType } from '@/TrtcCloud/lib/TrtcDefines';
      * this.trtcCloud.stopRemoteView(remoteUserId, TRTCVideoStreamType.TRTCVideoStreamTypeBig);
      */
-    TrtcCloud.prototype.stopRemoteView = function (userId, streamType) {
-        return TrtcCloudImpl_1.default._getInstance().stopRemoteView(userId, streamType);
-    };
+    stopRemoteView(userId, streamType) {
+        return TrtcCloudImpl._getInstance().stopRemoteView(userId, streamType);
+    }
     /**
      * 设置远端画面的渲染参数，可设置的参数包括有：画面的旋转角度、填充模式以及左右镜像等。
      * @param {String} userId 远端用户 ID
@@ -294,7 +291,7 @@ var TrtcCloud = /** @class */ (function () {
      * };
      * this.trtcCloud.setRemoteRenderParams(userId, TRTCVideoStreamType.TRTCVideoStreamTypeBig, renderParams);
      */
-    TrtcCloud.prototype.setRemoteRenderParams = function (userId, streamType, params) { };
+    setRemoteRenderParams(userId, streamType, params) { }
     /**
      * 视频画面截图
      *
@@ -308,9 +305,9 @@ var TrtcCloud = /** @class */ (function () {
      * this.trtcCloud.snapshotVideo(null, TRTCVideoStreamType.TRTCVideoStreamTypeBig); // 截取本地画面
      * this.trtcCloud.snapshotVideo(this.remoteUserId, TRTCVideoStreamType.TRTCVideoStreamTypeBig); // 截取远端指定用户画面
      */
-    TrtcCloud.prototype.snapshotVideo = function (userId, streamType, listener) {
-        return TrtcCloudImpl_1.default._getInstance().snapshotVideo(userId, streamType, listener);
-    };
+    snapshotVideo(userId, streamType, listener) {
+        return TrtcCloudImpl._getInstance().snapshotVideo(userId, streamType, listener);
+    }
     /**
      * 开启本地音频的采集和上行, 并设置音频质量<br>
      * 该函数会启动麦克风采集，并将音频数据传输给房间里的其他用户。 SDK 不会默认开启本地音频采集和上行，您需要调用该函数开启，否则房间里的其他用户将无法听到您的声音<br>
@@ -325,9 +322,9 @@ var TrtcCloud = /** @class */ (function () {
      * import { TRTCAudioQuality } from '@/TrtcCloud/lib/TrtcDefines';
      * this.trtcCloud.startLocalAudio(TRTCAudioQuality.TRTCAudioQualityDefault);
      */
-    TrtcCloud.prototype.startLocalAudio = function (quality) {
-        return TrtcCloudImpl_1.default._getInstance().startLocalAudio(quality);
-    };
+    startLocalAudio(quality) {
+        return TrtcCloudImpl._getInstance().startLocalAudio(quality);
+    }
     /**
      * 关闭本地音频的采集和上行<br>
      * 当关闭本地音频的采集和上行，房间里的其它成员会收到 `onUserAudioAvailable(false)` 回调通知
@@ -336,9 +333,9 @@ var TrtcCloud = /** @class */ (function () {
      * @example
      * this.trtcCloud.stopLocalAudio();
      */
-    TrtcCloud.prototype.stopLocalAudio = function () {
-        return TrtcCloudImpl_1.default._getInstance().stopLocalAudio();
-    };
+    stopLocalAudio() {
+        return TrtcCloudImpl._getInstance().stopLocalAudio();
+    }
     /**
      * 静音本地的音频
      *
@@ -353,9 +350,9 @@ var TrtcCloud = /** @class */ (function () {
      * @example
      * this.trtcCloud.muteLocalAudio(true);
      */
-    TrtcCloud.prototype.muteLocalAudio = function (mute) {
-        return TrtcCloudImpl_1.default._getInstance().muteLocalAudio(mute);
-    };
+    muteLocalAudio(mute) {
+        return TrtcCloudImpl._getInstance().muteLocalAudio(mute);
+    }
     /**
      * 静音掉某一个用户的声音，同时不再拉取该远端用户的音频数据流
      *
@@ -366,9 +363,9 @@ var TrtcCloud = /** @class */ (function () {
      * @example
      * this.trtcCloud.muteRemoteAudio('denny', true);
      */
-    TrtcCloud.prototype.muteRemoteAudio = function (userId, mute) {
-        return TrtcCloudImpl_1.default._getInstance().muteRemoteAudio(userId, mute);
-    };
+    muteRemoteAudio(userId, mute) {
+        return TrtcCloudImpl._getInstance().muteRemoteAudio(userId, mute);
+    }
     /**
      * 静音掉所有用户的声音，同时不再拉取该远端用户的音频数据流
      *
@@ -378,9 +375,9 @@ var TrtcCloud = /** @class */ (function () {
      * @example
      * this.trtcCloud.muteAllRemoteAudio(true);
      */
-    TrtcCloud.prototype.muteAllRemoteAudio = function (mute) {
-        return TrtcCloudImpl_1.default._getInstance().muteAllRemoteAudio(mute);
-    };
+    muteAllRemoteAudio(mute) {
+        return TrtcCloudImpl._getInstance().muteAllRemoteAudio(mute);
+    }
     /**
      * 设置音频路由
      *
@@ -393,9 +390,9 @@ var TrtcCloud = /** @class */ (function () {
      * import { TRTCAudioRoute } from '@/TrtcCloud/lib/TrtcDefines';
      * this.trtcCloud.setAudioRoute(TRTCAudioRoute.TRTCAudioRouteSpeaker);
      */
-    TrtcCloud.prototype.setAudioRoute = function (route) {
-        return TrtcCloudImpl_1.default._getInstance().setAudioRoute(route);
-    };
+    setAudioRoute(route) {
+        return TrtcCloudImpl._getInstance().setAudioRoute(route);
+    }
     /**
      * 启用或关闭音量大小提示
      *
@@ -409,9 +406,9 @@ var TrtcCloud = /** @class */ (function () {
      * @example
      * this.trtcCloud.enableAudioVolumeEvaluation(300);
      */
-    TrtcCloud.prototype.enableAudioVolumeEvaluation = function (interval) {
-        return TrtcCloudImpl_1.default._getInstance().enableAudioVolumeEvaluation(interval);
-    };
+    enableAudioVolumeEvaluation(interval) {
+        return TrtcCloudImpl._getInstance().enableAudioVolumeEvaluation(interval);
+    }
     /////////////////////////////////////////////////////////////////////////////////
     //
     //                      屏幕分享
@@ -439,9 +436,9 @@ var TrtcCloud = /** @class */ (function () {
      * };
      * this.trtcCloud.setSubStreamEncoderParam(params);
      */
-    TrtcCloud.prototype.setSubStreamEncoderParam = function (param) {
-        return TrtcCloudImpl_1.default._getInstance().setSubStreamEncoderParam(param);
-    };
+    setSubStreamEncoderParam(param) {
+        return TrtcCloudImpl._getInstance().setSubStreamEncoderParam(param);
+    }
     /**
      * 启动屏幕分享
      *
@@ -465,38 +462,36 @@ var TrtcCloud = /** @class */ (function () {
      * };
      * this.trtcCloud.startScreenCapture(TRTCVideoStreamType.TRTCVideoStreamTypeSub, encParams);
      */
-    TrtcCloud.prototype.startScreenCapture = function (streamType, encParams) {
-        if (streamType === void 0) { streamType = TrtcDefines_1.TRTCVideoStreamType.TRTCVideoStreamTypeSub; }
-        if (encParams === void 0) { encParams = null; }
-        return TrtcCloudImpl_1.default._getInstance().startScreenCapture(streamType, encParams);
-    };
+    startScreenCapture(streamType = TRTCVideoStreamType.TRTCVideoStreamTypeSub, encParams = null) {
+        return TrtcCloudImpl._getInstance().startScreenCapture(streamType, encParams);
+    }
     /**
      * 停止屏幕分享
      * @memberof TrtcCloud
      * @example
      * this.trtcCloud.stopScreenCapture();
      */
-    TrtcCloud.prototype.stopScreenCapture = function () {
-        return TrtcCloudImpl_1.default._getInstance().stopScreenCapture();
-    };
+    stopScreenCapture() {
+        return TrtcCloudImpl._getInstance().stopScreenCapture();
+    }
     /**
      * 暂停屏幕分享
      * @memberof TrtcCloud
      * @example
      * this.trtcCloud.pauseScreenCapture();
      */
-    TrtcCloud.prototype.pauseScreenCapture = function () {
-        return TrtcCloudImpl_1.default._getInstance().pauseScreenCapture();
-    };
+    pauseScreenCapture() {
+        return TrtcCloudImpl._getInstance().pauseScreenCapture();
+    }
     /**
      * 恢复屏幕分享
      * @memberof TrtcCloud
      * @example
      * this.trtcCloud.resumeScreenCapture();
      */
-    TrtcCloud.prototype.resumeScreenCapture = function () {
-        return TrtcCloudImpl_1.default._getInstance().resumeScreenCapture();
-    };
+    resumeScreenCapture() {
+        return TrtcCloudImpl._getInstance().resumeScreenCapture();
+    }
     /////////////////////////////////////////////////////////////////////////////////
     //
     //                      美颜 + 水印
@@ -517,9 +512,9 @@ var TrtcCloud = /** @class */ (function () {
      * this.trtcCloud.setBeautyLevel(beautyLevel);
      * this.trtcCloud.setBeautyStyle(TRTCBeautyStyle.TRTCBeautyStyleSmooth);
      */
-    TrtcCloud.prototype.setBeautyStyle = function (beautyStyle) {
-        return TrtcCloudImpl_1.default._getInstance().setBeautyStyle(beautyStyle);
-    };
+    setBeautyStyle(beautyStyle) {
+        return TrtcCloudImpl._getInstance().setBeautyStyle(beautyStyle);
+    }
     /**
      * 设置美颜级别
      * @param {Number} beautyLevel	美颜级别，取值范围0 - 9； 0表示关闭，9表示效果最明显。
@@ -529,9 +524,81 @@ var TrtcCloud = /** @class */ (function () {
      * const beautyLevel = 5; // 美颜级别，取值范围0 - 9； 0表示关闭，9表示效果最明显。
      * this.trtcCloud.setBeautyLevel(beautyLevel);
      */
-    TrtcCloud.prototype.setBeautyLevel = function (beautyLevel) {
-        return TrtcCloudImpl_1.default._getInstance().setBeautyLevel(beautyLevel);
-    };
+    setBeautyLevel(beautyLevel) {
+        return TrtcCloudImpl._getInstance().setBeautyLevel(beautyLevel);
+    }
+    /////////////////////////////////////////////////////////////////////////////////
+    //
+    //                      背景音效
+    //
+    /////////////////////////////////////////////////////////////////////////////////
+    /**
+     * 开始播放背景音乐
+     * 每个音乐都需要您指定具体的 ID，您可以通过该 ID 对音乐的开始、停止、音量等进行设置。
+     * **Note:**
+     * - 如果要多次播放同一首背景音乐，请不要每次播放都分配一个新的 ID，我们推荐使用相同的 ID。
+     * - 若您希望同时播放多首不同的音乐，请为不同的音乐分配不同的 ID 进行播放。
+     * - 如果使用同一个 ID 播放不同音乐，SDK 会先停止播放旧的音乐，再播放新的音乐。
+     *
+     * @param {AudioMusicParam} musicParam 音乐参数
+     * @param {Number} musicParam.id 音乐 ID
+     * @param {String} musicParam.path 音效文件的完整路径或 URL 地址。支持的音频格式包括 MP3、AAC、M4A、WAV
+     * @param {Number} musicParam.loopCount 音乐循环播放的次数。取值范围为0 - 任意正整数，默认值：0。0表示播放音乐一次；1表示播放音乐两次；以此类推
+     * @param {Boolean} musicParam.publish 是否将音乐传到远端。true：音乐在本地播放的同时，远端用户也能听到该音乐；false：主播只能在本地听到该音乐，远端观众听不到。默认值：false。
+     * @param {Boolean} musicParam.isShortFile 播放的是否为短音乐文件。true：需要重复播放的短音乐文件；false：正常的音乐文件。默认值：false
+     * @param {Number} musicParam.startTimeMS 音乐开始播放时间点，单位: 毫秒。
+     * @param {Number} musicParam.endTimeMS 音乐结束播放时间点，单位: 毫秒，0 表示播放至文件结尾。
+     * @memberof TrtcCloud
+     * @example
+     * import { AudioMusicParam } from '@/TrtcCloud/lib/TrtcDefines';
+     * const musicParam = {
+     *  id: 1,
+     *  path: '',
+     *  loopCount: 1,
+     *  publish: true,
+     *  isShortFile: false,
+     *  startTimeMS: 0,
+     *  endTimeMS: 0,
+     * };
+     * this.trtcCloud.startPlayMusic(musicParam);
+     */
+    startPlayMusic(musicParam) {
+        return TrtcCloudImpl._getInstance().startPlayMusic(musicParam);
+    }
+    /**
+     * 停止播放背景音乐
+     * @param {Number} id	音乐 ID
+     *
+     * @memberof TrtcCloud
+     * @example
+     * const musicId = 5;
+     * this.trtcCloud.stopPlayMusic(musicId);
+     */
+    stopPlayMusic(id) {
+        return TrtcCloudImpl._getInstance().stopPlayMusic(id);
+    }
+    /**
+     * 暂停播放背景音乐
+     * @param {Number} id	音乐 ID
+     * @memberof TrtcCloud
+     * @example
+     * const musicId = 5;
+     * this.trtcCloud.pausePlayMusic(musicId);
+     */
+    pausePlayMusic(id) {
+        return TrtcCloudImpl._getInstance().pausePlayMusic(id);
+    }
+    /**
+     * 恢复播放背景音乐
+     * @param {Number} id	音乐 ID
+     * @memberof TrtcCloud
+     * @example
+     * const musicId = 5;
+     * this.trtcCloud.resumePlayMusic(musicId);
+     */
+    resumePlayMusic(id) {
+        return TrtcCloudImpl._getInstance().resumePlayMusic(id);
+    }
     /////////////////////////////////////////////////////////////////////////////////
     //
     //                       设置 TRTCCallback 回调
@@ -568,7 +635,7 @@ var TrtcCloud = /** @class */ (function () {
      * @param {String} message 错误信息
      * @param {Object} extraInfo 扩展信息字段，个别错误码可能会带额外的信息帮助定位问题
      */
-    TrtcCloud.prototype.onError = function (code, message, extraInfo) { };
+    onError(code, message, extraInfo) { }
     /**
      * 警告回调，用于告知您一些非严重性问题，例如出现卡顿或者可恢复的解码失败<br>
      * @event TRTCCallback#onWarning
@@ -576,7 +643,7 @@ var TrtcCloud = /** @class */ (function () {
      * @param {String} message 警告信息
      * @param {Object} extraInfo 扩展信息字段，个别警告码可能会带额外的信息帮助定位问题
      */
-    TrtcCloud.prototype.onWarning = function (code, message, extraInfo) { };
+    onWarning(code, message, extraInfo) { }
     /**
      * 进房后的回调<br>
      * 调用 `enterRoom()` 接口执行进房操作后，会收到 `onEnterRoom(result)` 回调<br>
@@ -586,7 +653,7 @@ var TrtcCloud = /** @class */ (function () {
      * @event TRTCCallback#onEnterRoom
      * @param {Number} result 进房耗时
      */
-    TrtcCloud.prototype.onEnterRoom = function (result) { };
+    onEnterRoom(result) { }
     /**
      * 离开房间的事件回调<br>
      * 调用 `exitRoom()` 接口会执行退出房间的相关逻辑，例如释放音视频设备资源和编解码器资源等。待资源释放完毕，会通过 `onExitRoom()` 回调通知到您<br>
@@ -597,7 +664,7 @@ var TrtcCloud = /** @class */ (function () {
      * @event TRTCCallback#onExitRoom
      * @param {Number} reason 离开房间原因，0：主动调用 exitRoom 退房；1：被服务器踢出当前房间；2：当前房间整个被解散
      */
-    TrtcCloud.prototype.onExitRoom = function (reason) { };
+    onExitRoom(reason) { }
     /**
      * 切换角色的事件回调<br>
      * 调用 TRTCCloud 中的 switchRole() 接口会切换主播和观众的角色，该操作会伴随一个线路切换的过程， 待 SDK 切换完成后，会抛出 onSwitchRole() 事件回调
@@ -606,7 +673,7 @@ var TrtcCloud = /** @class */ (function () {
      * @param {Number} code 错误码，[详见](https://cloud.tencent.com/document/product/647/38308#.E8.AD.A6.E5.91.8A.E7.A0.81.E8.A1.A8)
      * @param {String} message 错误信息
      */
-    TrtcCloud.prototype.onSwitchRole = function (code, message) { };
+    onSwitchRole(code, message) { }
     /**
      * 开始渲染本地或远程用户的首帧画面<br>
      * 如果 userId 为 null，代表开始渲染本地采集的摄像头画面，需要您先调用 `startLocalPreview` 触发。 如果 userId 不为 null，代表开始渲染远程用户的首帧画面，需要您先调用 `startRemoteView` 触发<br>
@@ -618,7 +685,7 @@ var TrtcCloud = /** @class */ (function () {
      * @param {Number} width 画面宽度
      * @param {Number} height 画面高度
      */
-    TrtcCloud.prototype.onFirstVideoFrame = function (userId, streamType, width, height) { };
+    onFirstVideoFrame(userId, streamType, width, height) { }
     /**
      * 开始播放远程用户的首帧音频（本地声音暂不通知）<br>
      * 如果 userId 为 null，代表开始渲染本地采集的摄像头画面，需要您先调用 `startLocalPreview` 触发。 如果 userId 不为 null，代表开始渲染远程用户的首帧画面，需要您先调用 `startRemoteView` 触发<br>
@@ -627,22 +694,22 @@ var TrtcCloud = /** @class */ (function () {
      * @event TRTCCallback#onFirstAudioFrame
      * @param {String} userId 远程用户 ID
      */
-    TrtcCloud.prototype.onFirstAudioFrame = function (userId) { };
+    onFirstAudioFrame(userId) { }
     /**
      * 截图完成时回调<br>
      * @event TRTCCallback#onSnapshotComplete
      * @param {String} base64Data 截图对应的 base64 数据
      * @param {String} message 错误信息
      */
-    TrtcCloud.prototype.onSnapshotComplete = function (base64Data, message) { };
+    onSnapshotComplete(base64Data, message) { }
     /**
      * 麦克风准备就绪
      */
-    TrtcCloud.prototype.onMicDidReady = function () { };
+    onMicDidReady() { }
     /**
      * 摄像头准备就绪
      */
-    TrtcCloud.prototype.onCameraDidReady = function () { };
+    onCameraDidReady() { }
     /**
      * 网络质量：该回调每2秒触发一次，统计当前网络的上行和下行质量<br>
      * userId 为本地用户 ID 代表自己当前的视频质量
@@ -650,7 +717,7 @@ var TrtcCloud = /** @class */ (function () {
      * @param {String} localQuality 上行网络质量
      * @param {String} remoteQuality 下行网络质量
      */
-    TrtcCloud.prototype.onNetworkQuality = function (localQuality, remoteList) { };
+    onNetworkQuality(localQuality, remoteList) { }
     /**
      * 有用户加入当前房间<br>
      * 出于性能方面的考虑，在两种不同的应用场景下，该通知的行为会有差别：<br>
@@ -660,7 +727,7 @@ var TrtcCloud = /** @class */ (function () {
      * @event TRTCCallback#onRemoteUserEnterRoom
      * @param {String} userId 用户标识 ID
      */
-    TrtcCloud.prototype.onRemoteUserEnterRoom = function (userId) { };
+    onRemoteUserEnterRoom(userId) { }
     /**
      * 有用户离开当前房间<br>
      * 与 onRemoteUserEnterRoom 相对应，在两种不同的应用场景下，该通知的行为会有差别：<br>
@@ -671,14 +738,14 @@ var TrtcCloud = /** @class */ (function () {
      * @param {String} userId 用户标识 ID
      * @param {Number} reason 离开原因，0 表示用户主动退出房间，1 表示用户超时退出，2 表示被踢出房间
      */
-    TrtcCloud.prototype.onRemoteUserLeaveRoom = function (userId, reason) { };
+    onRemoteUserLeaveRoom(userId, reason) { }
     /**
      * 首帧本地音频数据已经被送出<br>
      * 在 `enterRoom()` 并 `startLocalAudio()` 成功后开始麦克风采集，并将采集到的声音进行编码。 当 SDK 成功向云端送出第一帧音频数据后，会抛出这个回调事件
      *
      * @event TRTCCallback#onSendFirstLocalAudioFrame
      */
-    TrtcCloud.prototype.onSendFirstLocalAudioFrame = function () { };
+    onSendFirstLocalAudioFrame() { }
     /**
      * 首帧本地视频数据已经被送出<br>
      * SDK 会在 `enterRoom()` 并 `startLocalPreview()` 成功后开始摄像头采集，并将采集到的画面进行编码。 当 SDK 成功向云端送出第一帧视频数据后，会抛出这个回调事件
@@ -686,7 +753,7 @@ var TrtcCloud = /** @class */ (function () {
      * @event TRTCCallback#onSendFirstLocalVideoFrame
      * @param {TRTCVideoStreamType} streamType 视频流类型，大画面、小画面或辅流画面（屏幕分享）
      */
-    TrtcCloud.prototype.onSendFirstLocalVideoFrame = function (streamType) { };
+    onSendFirstLocalVideoFrame(streamType) { }
     /**
      * 技术指标统计回调<br>
      * 如果您是熟悉音视频领域相关术语，可以通过这个回调获取 SDK 的所有技术指标。 如果您是首次开发音视频相关项目，可以只关注 `onNetworkQuality` 回调
@@ -696,14 +763,14 @@ var TrtcCloud = /** @class */ (function () {
      *
      * @param {Object} statics 状态数据
      */
-    TrtcCloud.prototype.onStatistics = function (statics) { };
+    onStatistics(statics) { }
     /**
      * 远端用户是否存在可播放的音频数据<br>
      * @event TRTCCallback#onUserAudioAvailable
      * @param {String} userId 用户标识 ID
      * @param {Boolean} available 声音是否开启
      */
-    TrtcCloud.prototype.onUserAudioAvailable = function (userId, available) { };
+    onUserAudioAvailable(userId, available) { }
     /**
      * 远端用户是否存在可播放的主路画面（一般用于摄像头）<br>
      * 当您收到 `onUserVideoAvailable(userId, true)` 通知时，表示该路画面已经有可用的视频数据帧到达。 此时，您需要调用 `startRemoteView(userId)` 接口加载该用户的远程画面。 然后，您会收到名为 onFirstVideoFrame(userid) 的首帧画面渲染回调。<br>
@@ -713,7 +780,7 @@ var TrtcCloud = /** @class */ (function () {
      * @param {String} userId 用户标识 ID
      * @param {Boolean} available 画面是否开启
      */
-    TrtcCloud.prototype.onUserVideoAvailable = function (userId, available) { };
+    onUserVideoAvailable(userId, available) { }
     /**
      * 用于提示音量大小的回调，包括每个 userId 的音量和远端总音量<br>
      * SDK 可以评估每一路音频的音量大小，并每隔一段时间抛出该事件回调，您可以根据音量大小在 UI 上做出相应的提示，比如“波形图”或“音量槽”。 要完成这个功能， 您需要先调用 enableAudioVolumeEvaluation 开启这个能力并设定事件抛出的时间间隔。 需要补充说明的是，无论当前房间中是否有人说话，SDK 都会按照您设定的时间间隔定时抛出此事件回调，只不过当没有人说话时，userVolumes 为空，totalVolume 为 0。
@@ -725,33 +792,33 @@ var TrtcCloud = /** @class */ (function () {
      * @param {Array} userVolumes 是一个数组，用于承载所有正在说话的用户的音量大小，取值范围 0 - 100
      * @param {Number} totalVolume 所有远端用户的总音量大小, 取值范围 0 - 100
      */
-    TrtcCloud.prototype.onUserVoiceVolume = function (userVolumes, totalVolume) { };
+    onUserVoiceVolume(userVolumes, totalVolume) { }
     /**
      * 屏幕分享开启的事件回调<br>
      * 当您通过 startScreenCapture 等相关接口启动屏幕分享时，SDK 便会抛出此事件回调
      * @event TRTCCallback#onScreenCaptureStarted
      */
-    TrtcCloud.prototype.onScreenCaptureStarted = function () { };
+    onScreenCaptureStarted() { }
     /**
      * 屏幕分享停止的事件回调<br>
      * 当您通过 stopScreenCapture 停止屏幕分享时，SDK 便会抛出此事件回调
      * @event TRTCCallback#onScreenCaptureStopped
      * @param {Number} reason 停止原因，0：用户主动停止；1：屏幕窗口关闭导致停止；2：表示屏幕分享的显示屏状态变更（如接口被拔出、投影模式变更等）
      */
-    TrtcCloud.prototype.onScreenCaptureStopped = function (reason) { };
+    onScreenCaptureStopped(reason) { }
     /**
      * 屏幕分享停止的事件回调<br>
      * 当您通过 pauseScreenCapture 停止屏幕分享时，SDK 便会抛出此事件回调
      * @event TRTCCallback#onScreenCapturePaused
      * @param {Number} reason 停止原因，0：用户主动停止；1：屏幕窗口关闭导致停止；2：表示屏幕分享的显示屏状态变更（如接口被拔出、投影模式变更等）
      */
-    TrtcCloud.prototype.onScreenCapturePaused = function (reason) { };
+    onScreenCapturePaused(reason) { }
     /**
      * 屏幕分享恢复的事件回调<br>
      * 当您通过 resumeScreenCapture 恢复屏幕分享时，SDK 便会抛出此事件回调
      * @event TRTCCallback#onScreenCaptureResumed
      */
-    TrtcCloud.prototype.onScreenCaptureResumed = function () { };
+    onScreenCaptureResumed() { }
     /**
      * 某远端用户发布/取消了辅路视频画面<br>
      * “辅路画面”一般被用于承载屏幕分享的画面。当您收到 onUserSubStreamAvailable(userId, true) 通知时，表示该路画面已经有可播放的视频帧到达。 此时，您需要调用 startRemoteView 接口订阅该用户的远程画面，订阅成功后，您会继续收到该用户的首帧画面渲染回调 onFirstVideoFrame(userId)
@@ -760,7 +827,26 @@ var TrtcCloud = /** @class */ (function () {
      * - 拉取 Web 端（用 [WebRTC](https://web.sdk.qcloud.com/trtc/webrtc/doc/zh-cn/index.html) 实现屏幕分享）的屏幕分享，收不到 onUserSubStreamAvailable 事件。因为 [WebRTC](https://web.sdk.qcloud.com/trtc/webrtc/doc/zh-cn/index.html) 推的屏幕分享也是主流
      * @event TRTCCallback#onUserSubStreamAvailable
      */
-    TrtcCloud.prototype.onUserSubStreamAvailable = function (userId, available) { };
-    return TrtcCloud;
-}());
-exports.default = TrtcCloud;
+    onUserSubStreamAvailable(userId, available) { }
+    /**
+     * 用户视频大小发生改变回调。
+     * 当您收到 onUserVideoSizeChanged(userId, streamtype, newWidth, newHeight) 通知时，表示该路画面大小发生了调整，调整的原因可能是该用户调用了 setVideoEncoderParam 或者 setSubStreamEncoderParam 重新设置了画面尺寸。
+     * @event TRTCCallback#onUserVideoSizeChanged
+     */
+    onUserVideoSizeChanged(userId, streamType, newWidth, newHeight) { }
+    /**
+     * 背景音乐开始播放
+     * @event TRTCCallback#onStart
+     */
+    onStart(id, errCode) { }
+    /**
+     * 背景音乐的播放进度
+     * @event TRTCCallback#onPlayProgress
+     */
+    onPlayProgress(id, curPtsMS, durationMS) { }
+    /**
+     * 背景音乐已经播放完毕
+     * @event TRTCCallback#onComplete
+     */
+    onComplete(id, errCode) { }
+}

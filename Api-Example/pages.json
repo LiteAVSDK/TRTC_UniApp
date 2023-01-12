@@ -37,6 +37,12 @@
 			}
 		},
 		{
+			"path": "pages/examples/videoEncodeSet/index",
+			"style": {
+				"navigationBarTitleText": "本地画面编码设置"
+			}
+		},
+		{
 			"path": "pages/examples/audioCall/index",
 			"style": {
 				"navigationBarTitleText": "音频"
@@ -64,6 +70,12 @@
 			"path": "pages/examples/snapShot/index",
 			"style": {
 				"navigationBarTitleText": "截屏"
+			}
+		},
+		{
+			"path": "pages/examples/playMusic/index",
+			"style": {
+				"navigationBarTitleText": "背景音效"
 			}
 		}
 	],
