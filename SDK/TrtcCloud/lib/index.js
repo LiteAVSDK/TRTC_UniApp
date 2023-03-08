@@ -1,6 +1,6 @@
 import TrtcCloudImpl from './TrtcCloudImpl';
 import { TRTCVideoStreamType, } from './TrtcDefines';
-const version = '1.1.0';
+const version = '1.2.0';
 export * from './TrtcDefines';
 /**
  * TrtcCloud
@@ -168,14 +168,25 @@ export default class TrtcCloud {
      * @param {TRTCVideoEncParam} param 用于设置视频编码器的相关参数
      * @memberof TrtcCloud
      * @example
-     * const param = {
-     *   videoResolution: TRTCVideoResolution.TRTCVideoResolution_640_360,
-     *   videoResolutionMode: TRTCVideoResolutionMode.TRTCVideoResolutionModePortrait,
-     *   videoFps: 15,
-     *   videoBitrate: 900,
-     *   minVideoBitrate: 200,
-     *   enableAdjustRes: false,
+     *
+     * import { TRTCVideoResolution, TRTCVideoResolutionMode, TRTCVideoEncParam } from '@/TrtcCloud/lib/TrtcDefines';
+     * const videoResolution = TRTCVideoResolution.TRTCVideoResolution_480_360;
+     * const videoResolutionMode = TRTCVideoResolutionMode.TRTCVideoResolutionModeLandscape; // 横屏采集
+     * const videoFps = 15;
+     * const videoBitrate = 900;
+     * const minVideoBitrate = 200;
+     * const enableAdjustRes = false;
+     * // const param = new TRTCVideoEncParam(videoResolution, videoResolutionMode, videoFps, videoBitrate, minVideoBitrate, enableAdjustRes); // v1.1.0 方式
+     *
+     * const param = { // v1.2.0 以上版本支持的方式
+     *  videoResolution,
+     *  videoResolutionMode,
+     *  videoFps,
+     *  videoBitrate,
+     *  minVideoBitrate,
+     *  enableAdjustRes,
      * };
+     *
      * this.trtcCloud.setVideoEncoderParam(param);
      */
     setVideoEncoderParam(param) {
@@ -384,11 +395,11 @@ export default class TrtcCloud {
      * 设置“音频路由”，即设置声音是从手机的扬声器还是从听筒中播放出来，因此该接口仅适用于手机等移动端设备。 手机有两个扬声器：一个是位于手机顶部的听筒，一个是位于手机底部的立体声扬声器。
      * 设置音频路由为听筒时，声音比较小，只有将耳朵凑近才能听清楚，隐私性较好，适合用于接听电话。 设置音频路由为扬声器时，声音比较大，不用将手机贴脸也能听清，因此可以实现“免提”的功能。
      *
-     * @param {TRTCAudioRoute} route 音频路由，即声音由哪里输出（扬声器、听筒）, 默认值：TRTCAudioRoute.TRTCAudioRouteSpeaker（扬声器）
+     * @param {TRTCAudioRoute} route 音频路由，即声音由哪里输出（扬声器、听筒）, 默认值：TRTCAudioRoute.TRTCAudioRouteSpeaker（扬声器）,
      * @memberof TrtcCloud
      * @example
      * import { TRTCAudioRoute } from '@/TrtcCloud/lib/TrtcDefines';
-     * this.trtcCloud.setAudioRoute(TRTCAudioRoute.TRTCAudioRouteSpeaker);
+     * this.trtcCloud.setAudioRoute(TRTCAudioRoute.TRTCAudioRouteSpeaker); // TRTCAudioRoute.TRTCAudioRouteEarpiece (听筒)
      */
     setAudioRoute(route) {
         return TrtcCloudImpl._getInstance().setAudioRoute(route);
@@ -534,11 +545,18 @@ export default class TrtcCloud {
     /////////////////////////////////////////////////////////////////////////////////
     /**
      * 开始播放背景音乐
-     * 每个音乐都需要您指定具体的 ID，您可以通过该 ID 对音乐的开始、停止、音量等进行设置。
+     * 每个音乐都需要您指定具体的 ID，您可以通过该 ID 对音乐的开始、停止、音量等进行设置。<br>
      * **Note:**
      * - 如果要多次播放同一首背景音乐，请不要每次播放都分配一个新的 ID，我们推荐使用相同的 ID。
      * - 若您希望同时播放多首不同的音乐，请为不同的音乐分配不同的 ID 进行播放。
      * - 如果使用同一个 ID 播放不同音乐，SDK 会先停止播放旧的音乐，再播放新的音乐。
+     *
+     * **Note:**<br>
+     * 在 uni-app 中 path 如何获取。
+     * - 使用 cdn 地址，例如：`path = https://web.sdk.qcloud.com/component/TUIKit/assets/uni-app/calling-bell-1.mp3;`
+     * - 使用本地绝对路径。
+     *     1. 通过 [uni.saveFile](https://zh.uniapp.dcloud.io/api/file/file.html#savefile) 获取保存后的相对路径（建议这种路径）。
+     *     2. 将上一步的相对路径转成绝对路径，[plus.io.convertLocalFileSystemURL](https://www.html5plus.org/doc/zh_cn/io.html#plus.io.convertLocalFileSystemURL)。
      *
      * @param {AudioMusicParam} musicParam 音乐参数
      * @param {Number} musicParam.id 音乐 ID
@@ -825,27 +843,40 @@ export default class TrtcCloud {
      *
      * **Note:**
      * - 拉取 Web 端（用 [WebRTC](https://web.sdk.qcloud.com/trtc/webrtc/doc/zh-cn/index.html) 实现屏幕分享）的屏幕分享，收不到 onUserSubStreamAvailable 事件。因为 [WebRTC](https://web.sdk.qcloud.com/trtc/webrtc/doc/zh-cn/index.html) 推的屏幕分享也是主流
+     * @param {String} userId 用户 ID
+     * @param {Boolean} available 是否可用，true 表示辅流可用
      * @event TRTCCallback#onUserSubStreamAvailable
      */
     onUserSubStreamAvailable(userId, available) { }
     /**
-     * 用户视频大小发生改变回调。
+     * 用户视频大小发生改变回调。<br>
      * 当您收到 onUserVideoSizeChanged(userId, streamtype, newWidth, newHeight) 通知时，表示该路画面大小发生了调整，调整的原因可能是该用户调用了 setVideoEncoderParam 或者 setSubStreamEncoderParam 重新设置了画面尺寸。
+     * @param {String} userId 用户 ID
+     * @param {TRTCVideoStreamType} streamType 视频流类型，仅支持 TRTCVideoStreamTypeBig 和 TRTCVideoStreamTypeSub
+     * @param {Number} newWidth 视频流的宽度（像素）
+     * @param {Number} newHeight 视频流的高度（像素）
      * @event TRTCCallback#onUserVideoSizeChanged
      */
     onUserVideoSizeChanged(userId, streamType, newWidth, newHeight) { }
     /**
      * 背景音乐开始播放
+     * @param {Number} id 播放的 id
+     * @param {Number} errCode 播放的状态码
      * @event TRTCCallback#onStart
      */
     onStart(id, errCode) { }
     /**
      * 背景音乐的播放进度
+     * @param {Number} id 播放的 id
+     * @param {Number} curPtsMS 当前播放的位置
+     * @param {Number} durationMS 当前音频总时长
      * @event TRTCCallback#onPlayProgress
      */
     onPlayProgress(id, curPtsMS, durationMS) { }
     /**
      * 背景音乐已经播放完毕
+     * @param {Number} id 播放的 id
+     * @param {Number} errCode 播放结束的状态码
      * @event TRTCCallback#onComplete
      */
     onComplete(id, errCode) { }
