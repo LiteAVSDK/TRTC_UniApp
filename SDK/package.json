@@ -1,6 +1,6 @@
 {
   "name": "TrtcCloud",
-  "version": "1.1.0",
+  "version": "1.2.0",
 	"description": "Real-time audio and video SDK for uni-app",
 	"main": "./TrtcCloud/lib/index.js",
 	"directories": {

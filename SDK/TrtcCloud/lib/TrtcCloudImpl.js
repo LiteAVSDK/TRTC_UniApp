@@ -49,7 +49,7 @@ export default class TrtcCloudImpl {
             throw new TrtcError({
                 code: error.code || TXLiteJSError.UNKNOWN,
                 message: error.message,
-                name: error.name
+                name: error.name,
             });
         }
     }
@@ -226,7 +226,9 @@ export default class TrtcCloudImpl {
                     break;
                 }
                 case 'onError': {
+                    console.error(`onError: ${code}, ${message}, ${extraInfo}`);
                     callback(generateError_({ message }, code, extraInfo));
+                    break;
                 }
                 default: {
                     callback({ code, message, extraInfo });
@@ -314,10 +316,6 @@ export default class TrtcCloudImpl {
     }
     setVideoEncoderParam(param) {
         try {
-            if (param && !(param instanceof TRTCVideoEncParam)) {
-                console.error('startScreenCapture, param is not instanceof TRTCVideoEncParam!');
-                return;
-            }
             TrtcNativeTrtcCloudModule.setVideoEncoderParam(param);
         }
         catch (error) {
@@ -352,7 +350,7 @@ export default class TrtcCloudImpl {
             TrtcNativeTrtcCloudModule.setLocalRenderParams({
                 rotation,
                 fillMode,
-                mirrorType
+                mirrorType,
             });
         }
         catch (error) {
@@ -607,10 +605,6 @@ export default class TrtcCloudImpl {
     // ///////////////////////////////////////////////////////////////////////////////
     setSubStreamEncoderParam(param) {
         try {
-            if (param && !(param instanceof TRTCVideoEncParam)) {
-                console.error('startScreenCapture, param is not instanceof TRTCVideoEncParam!');
-                return;
-            }
             TrtcNativeTrtcCloudModule.setSubStreamEncoderParam(param);
         }
         catch (error) {
@@ -623,10 +617,6 @@ export default class TrtcCloudImpl {
             if ((streamType !== TRTCVideoStreamType.TRTCVideoStreamTypeSub && streamType !== TRTCVideoStreamType.TRTCVideoStreamTypeBig)) {
                 streamType = TRTCVideoStreamType.TRTCVideoStreamTypeSub;
             }
-            // if (encParams && !(encParams instanceof TRTCVideoEncParam)) {
-            //   console.error('startScreenCapture, encParams is not instanceof TRTCVideoEncParam!');
-            //   return;
-            // }
             const screenCaptureParams = Object.assign({ streamType }, encParams);
             if (platform === NAME.ANDROID) {
                 TrtcNativeTrtcCloudModule.startScreenCapture(screenCaptureParams);
@@ -666,14 +656,6 @@ export default class TrtcCloudImpl {
     resumeScreenCapture() {
         try {
             TrtcNativeTrtcCloudModule.resumeScreenCapture();
-        }
-        catch (error) {
-            throw generateError_(error);
-        }
-    }
-    setSubStreamEncoderParam(encParams) {
-        try {
-            TrtcNativeTrtcCloudModule.setSubStreamEncoderParam(encParams);
         }
         catch (error) {
             throw generateError_(error);
