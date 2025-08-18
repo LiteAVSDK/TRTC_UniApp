@@ -1,79 +1,80 @@
 <template>
-	<view class="trtc-container">
-		<view v-for="(item, index) in list" :key="item.id">
-			<uni-section :title="item.section"></uni-section>
-			<view v-for="(row, index) in item.rows" :key="row.id">
-				<uni-list>
-					<uni-list-item :title="row.name" :clickable="true" :to="row.url"></uni-list-item>
-				</uni-list>
-			</view>
-		</view>
-	</view>
+    <view class="trtc-container">
+        <view v-for="(item, index) in list" :key="item.id">
+            <uni-section :title="item.section"></uni-section>
+            <view v-for="(row, index) in item.rows" :key="row.id">
+                <uni-list>
+                    <uni-list-item :title="row.name" :clickable="true" :to="row.url"></uni-list-item>
+                </uni-list>
+            </view>
+        </view>
+    </view>
 </template>
 
 <script>
-	export default {
-		data() {
-			return {
-				list: [
-          {
-            section: "基础使用",
-            rows: [
-              {
-                name: "1v1音视频",
-                url: "/pages/examples/1v1/index",
-              },
-              {
-                name: "多人音视频",
-                url: "/pages/examples/multiCall/index",
-							},
-              {
-                name: "视频",
-                url: "/pages/examples/videoCall/index",
-              },
-              {
-                name: "本地画面渲染设置",
-                url: "/pages/examples/videoRenderSet/index",
-              },
-							{
-							  name: "远端画面渲染设置",
-							  url: "/pages/examples/remoteVideoRenderSet/index",
-							},
-              {
-							  name: "本地画面编码设置",
-							  url: "/pages/examples/videoEncodeSet/index",
-							},
-							{
-							  name: "音频",
-							  url: "/pages/examples/audioCall/index",
-							},
-							{
-							  name: "角色切换",
-							  url: "/pages/examples/switchRole/index",
-							},
-              {
-                name: "本地预览自定义",
-                url: "/pages/examples/localViewHover/index",
-              },
-              {
-                name: "屏幕分享",
-                url: "/pages/examples/screenShare/index",
-              },
-              {
-                name: "截屏",
-                url: "/pages/examples/snapShot/index",
-              },
-              {
-                name: "背景音效",
-                url: "/pages/examples/playMusic/index",
-              }
-            ]
-          }
-        ]
-			}
-		},
-		methods: {}
-	}
+    export default {
+        data() {
+            return {
+                list: [{
+                    section: "基础使用",
+                    rows: [{
+                            name: "1v1音视频",
+                            url: "/pages/examples/1v1/index",
+                        },
+                        {
+                            name: "多人音视频",
+                            url: "/pages/examples/multiCall/index",
+                        },
+                        {
+                            name: "视频",
+                            url: "/pages/examples/videoCall/index",
+                        },
+                        {
+                            name: "本地画面渲染设置",
+                            url: "/pages/examples/videoRenderSet/index",
+                        },
+                        {
+                            name: "远端画面渲染设置",
+                            url: "/pages/examples/remoteVideoRenderSet/index",
+                        },
+                        {
+                            name: "本地画面编码设置",
+                            url: "/pages/examples/videoEncodeSet/index",
+                        },
+                        {
+                            name: "音频",
+                            url: "/pages/examples/audioCall/index",
+                        },
+                        {
+                            name: "角色切换",
+                            url: "/pages/examples/switchRole/index",
+                        },
+                        {
+                            name: "本地预览自定义",
+                            url: "/pages/examples/localViewHover/index",
+                        },
+                        {
+                            name: "屏幕分享",
+                            url: "/pages/examples/screenShare/index",
+                        },
+                        {
+                            name: "截屏",
+                            url: "/pages/examples/snapShot/index",
+                        },
+                        {
+                            name: "背景音效",
+                            url: "/pages/examples/playMusic/index",
+                        },
+                        {
+                            name: "自定义消息",
+                            url: "/pages/examples/customMessage/index",
+                        }
+                    ]
+                }]
+            }
+        },
+        methods: {}
+    }
 </script>
 
 <style>
