@@ -619,6 +619,33 @@ export default class TrtcCloud {
     }
     /////////////////////////////////////////////////////////////////////////////////
     //
+    //                    自定义消息发送接口
+    //
+    /////////////////////////////////////////////////////////////////////////////////
+
+    /**
+     * 11.1 使用 UDP 通道发送自定义消息给房间内所有用户。
+     *
+     * 该接口可以让您借助 TRTC 的 UDP 通道，向当前房间里的其他用户广播自定义数据，以达到传输信令的目的。
+     * 房间中的其他用户可以通过 {@link TRTCCloudListener} 中的 onRecvCustomCmdMsg 回调接收消息。
+     * @param cmdID 消息 ID，取值范围为 [1, 10]。
+     * @param data 待发送的消息，单个消息的最大长度被限制为 1KB。
+     * @param reliable 是否可靠发送，可靠发送可以获得更高的发送成功率，但可靠发送比不可靠发送会带来更大的接收延迟。
+     * @param ordered 是否要求有序，即是否要求接收端的数据包顺序和发送端的数据包顺序一致（这会带来一定的接收延时）。
+     * @return true：消息已经发出；false：消息发送失败。
+     * @note
+     * 1. 发送消息到房间内所有用户（暂时不支持 Web/小程序端），每秒最多能发送30条消息（与 {@link sendSEIMsg} 共享限制）。
+     * 2. 每个包最大为 1KB，超过则很有可能会被中间路由器或者服务器丢弃。
+     * 3. 每个客户端每秒最多能发送总计 16KB 数据（与 {@link sendSEIMsg} 共享限制）。
+     * 4. 请将 `reliable` 和 `ordered` 同时设置为 true 或同时设置为 false，暂不支持交叉设置。
+     * 5. 强烈建议您将不同类型的消息设定为不同的 cmdID，这样可以在要求有序的情况下减小消息时延。
+     * 6. 目前仅支持主播身份。
+     */
+    sendCustomCmdMsg(params) {
+         return TrtcCloudImpl._getInstance().sendCustomCmdMsg(params);
+    }
+    /////////////////////////////////////////////////////////////////////////////////
+    //
     //                       设置 TRTCCallback 回调
     //
     /////////////////////////////////////////////////////////////////////////////////
@@ -880,4 +907,17 @@ export default class TrtcCloud {
      * @event TRTCCallback#onComplete
      */
     onComplete(id, errCode) { }
+    
+    
+    /**
+     * 收到自定义消息的事件回调。
+     *
+     * 当房间中的某个用户使用 {@link sendCustomCmdMsg} 发送自定义 UDP 消息时，房间中的其他用户可以通过 `onRecvCustomCmdMsg` 事件回调接收到该条消息。
+     * @param userId 用户标识。
+     * @param cmdID 命令 ID。
+     * @param seq   消息序号。
+     * @param message 消息数据。
+     * @event TRTCCallback#onRecvCustomCmdMsg
+     */
+    onRecvCustomCmdMsg(userId, cmdID, seq, message) { }
 }

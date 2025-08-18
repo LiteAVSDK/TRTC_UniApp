@@ -77,7 +77,13 @@
 			"style": {
 				"navigationBarTitleText": "背景音效"
 			}
-		}
+		},
+        {
+        	"path": "pages/examples/customMessage/index",
+        	"style": {
+        		"navigationBarTitleText": "自定义消息"
+        	}
+        }
 	],
 	"globalStyle": {
 		"navigationBarTextStyle": "black",

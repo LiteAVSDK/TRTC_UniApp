@@ -230,6 +230,15 @@ export default class TrtcCloudImpl {
                     callback(generateError_({ message }, code, extraInfo));
                     break;
                 }
+                case 'onRecvCustomCmdMsg': {
+                    const userId = code;
+                    const cmdID = data[1] || 0;
+                    const seq = data[2] || 0;
+                    const message = data[3] || "";
+                    console.error(`onRecvCustomCmdMsg: ${userId}, ${cmdID}, ${seq}, ${message}`);
+                    callback({ userId, cmdID, seq, message });
+                    break;
+                }
                 default: {
                     callback({ code, message, extraInfo });
                 }
@@ -656,6 +665,14 @@ export default class TrtcCloudImpl {
     resumeScreenCapture() {
         try {
             TrtcNativeTrtcCloudModule.resumeScreenCapture();
+        }
+        catch (error) {
+            throw generateError_(error);
+        }
+    }
+    sendCustomCmdMsg(params) {
+        try {
+            TrtcNativeTrtcCloudModule.sendCustomCmdMsg(params)
         }
         catch (error) {
             throw generateError_(error);
