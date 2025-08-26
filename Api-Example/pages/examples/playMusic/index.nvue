@@ -235,8 +235,8 @@
 				this.trtcCloud.on('onStart', (res) => {
 					console.log('- onStart: ', JSON.stringify(res));
 				});
-				this.trtcCloud.on('onPlayPrograss', (res) => {
-					console.log('- onPlayPrograss: ', JSON.stringify(res));
+				this.trtcCloud.on('onPlayProgress', (res) => {
+					console.log('- onPlayProgress: ', JSON.stringify(res));
 				});
 				this.trtcCloud.on('onComplete', (res) => {
 					console.log('- onComplete: ', JSON.stringify(res));
